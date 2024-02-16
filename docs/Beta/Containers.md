@@ -10,12 +10,9 @@ Creates a new container based off a configuration profile
 
 **Returns:** Container configuration profile.
 
-## `visage_destroy_container(_container)` → `undefined`
+## `visage_destroy_container(_container)` → *void*
 Destroys a previously created container.
 
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`_container` |struct |Container to destroy. |
-
-
-
