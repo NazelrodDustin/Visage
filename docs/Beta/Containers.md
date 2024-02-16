@@ -1,6 +1,6 @@
 # Containers
 Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties. <br>
-#Member variables <br><br>
+# Member variables <br><br>
  | Name      | Type    | Description                             |
  |-----------|---------|-----------------------------------------|
  | x         | real    | The x position of the container         |
