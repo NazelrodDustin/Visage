@@ -1,13 +1,6 @@
 # Containers
 Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties.
 Member variables
- | Name      | Type    | Description                             |
- |-----------|---------|-----------------------------------------|
- | x         | real    | The x position of the container         |
- | y         | real    | The y position of the container         |
- | rotation  | real    | The rotation (radians) of the container |
- | scale     | real    | The scale of the container              |
- | isVisible | boolean |  Determines if the container is visible |
 
 ## `visage_create_container(config)` → *struct*
 Creates a new container based off a configuration profile
