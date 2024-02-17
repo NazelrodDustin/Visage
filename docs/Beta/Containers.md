@@ -18,12 +18,7 @@ Containers are the base for any GUI element. Can control visibility, location, r
  | animationAlphaLength    | real    | The length of the movement animation       |
 ## Member methods <br>
 
-## `container` (*constructor*)
-
-**Methods**
-### `.` → *struct*
-
-## `visage_create_container(config)` → *void*
+## `visage_create_container(config)` → *struct*
 Creates a new container based off a configuration profile
 
 | Parameter | Datatype  | Purpose |
@@ -32,9 +27,7 @@ Creates a new container based off a configuration profile
 
 **Returns:** Container configuration profile.
 
-### `.` → {rv}
-
-## `visage_destroy_container(container)` → {rv}
+## `visage_destroy_container(container)` → *void*
 Destroys a previously created container.
 
 | Parameter | Datatype  | Purpose |
