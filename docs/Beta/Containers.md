@@ -1,6 +1,5 @@
 # Containers
 Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties. <br>
-## Methods <br>
 
 ## `visage_container_create(config)` → *struct*
 Creates a new container based off a configuration profile.
@@ -25,6 +24,7 @@ Sets the movement animation curve for specified container.
 |-----------|-----------|---------|
 |`container` |struct |The container to set the movement animation in. |
 |`animationCurve` |struct |The animation curve to set in the container. |
+|`isReversed` |boolean |Determines if the animation curve is read normally (false) or reversed (true) |
 
 ## `visage_container_set_movement_duration(container, duration)` → *void*
 Sets the movement animation duration for specified container.
@@ -33,6 +33,7 @@ Sets the movement animation duration for specified container.
 |-----------|-----------|---------|
 |`container` |struct |The container to set the movement duration in. |
 |`duration` |real |The animation duration to set in the container. |
+|`offset` |real |The starting offset of the animation. |
 
 ## `visage_container_set_movement_position_start(container, startX, startY)` → *void*
 Sets the movement starting position for specified container.
