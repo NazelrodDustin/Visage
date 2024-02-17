@@ -17,7 +17,7 @@ Destroys a previously created container.
 |-----------|-----------|---------|
 |`container` |struct |Container to destroy. |
 
-## `visage_container_set_movement_animation(container, animationCurve)` → *void*
+## `visage_container_set_movement_animation(container, animationCurve, isReversed)` → *void*
 Sets the movement animation curve for specified container.
 
 | Parameter | Datatype  | Purpose |
@@ -26,7 +26,7 @@ Sets the movement animation curve for specified container.
 |`animationCurve` |struct |The animation curve to set in the container. |
 |`isReversed` |boolean |Determines if the animation curve is read normally (false) or reversed (true) |
 
-## `visage_container_set_movement_duration(container, duration)` → *void*
+## `visage_container_set_movement_duration(container, duration, offset)` → *void*
 Sets the movement animation duration for specified container.
 
 | Parameter | Datatype  | Purpose |
