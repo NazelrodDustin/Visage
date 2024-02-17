@@ -1,13 +1,17 @@
 # Containers
 Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties. <br>
 ## Member variables <br>
- | Name      | Type    | Description                             |
- |-----------|---------|-----------------------------------------|
- | x         | real    | The x position of the container         |
- | y         | real    | The y position of the container         |
- | rotation  | real    | The rotation (radians) of the container |
- | scale     | real    | The scale of the container              |
- | isVisible | boolean | Determines if the container is visible  |
+ | Name                   | Type    | Description                                |
+ |------------------------|---------|--------------------------------------------|
+ | x                      | real    | The center x position of the container     |
+ | y                      | real    | The center y position of the container     |
+ | rotation               | real    | The rotation (radians) of the container    |
+ | scale                  | real    | The scale of the container                 |
+ | isVisible              | boolean | Determines if the container is visible     |
+ | animationCurveMovement | struct  | The animation curve that dictates movement |
+ | animationCurveRotation | struct  | The animation curve that dictates rotation |
+ | animationCurveScale    | struct  | The animation curve that dictates scale    |
+ | animationCurveAlpha    | struct  | The animation curve that dictates alpha    |
 ## Member methods <br>
 
 ## `visage_create_container(config)` → *struct*
