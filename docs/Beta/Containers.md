@@ -19,8 +19,8 @@ Sets the movement animation curve for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the movement animation in. |
-|`animationCurve` |struct |The animation curve to set in the container. |
-|`isReversed` |boolean |Determines if the animation curve is read normally (false) or reversed (true) |
+|`animationCurve` |Asset.GMAnimCurve |The animation curve to set in the container. |
+|`isReversed` |bool |Determines if the animation curve is read normally (false) or reversed (true) |
 
 ## `visage_container_set_entrance_movement_timing(container, duration, offset)` → *void*
 Sets the movement animation duration for specified container.
@@ -55,8 +55,8 @@ Sets the movement animation curve for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the movement animation in. |
-|`animationCurve` |struct |The animation curve to set in the container. |
-|`isReversed` |boolean |Determines if the animation curve is read normally (false) or reversed (true) |
+|`animationCurve` |Asset.GMAnimCurve |The animation curve to set in the container. |
+|`isReversed` |bool |Determines if the animation curve is read normally (false) or reversed (true) |
 
 ## `visage_container_set_exit_movement_timing(container, duration, offset)` → *void*
 Sets the movement animation duration for specified container.
