@@ -20,7 +20,10 @@ Containers are the base for any GUI element. Can control visibility, location, r
 
 ## `container` (*constructor*)
 
-## `visage_create_container(config)` (*constructor*)
+**Methods**
+### `.` → *struct*
+
+## `visage_create_container(config)` → *void*
 Creates a new container based off a configuration profile
 
 | Parameter | Datatype  | Purpose |
@@ -29,7 +32,9 @@ Creates a new container based off a configuration profile
 
 **Returns:** Container configuration profile.
 
-## `visage_destroy_container(container)` (*constructor*)
+### `.` → {rv}
+
+## `visage_destroy_container(container)` → {rv}
 Destroys a previously created container.
 
 | Parameter | Datatype  | Purpose |
