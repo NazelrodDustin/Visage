@@ -2,7 +2,7 @@
 #macro TOME_ENABLED true
 
 // Personal access token obtained from github.com/settings/tokens
-#macro TOME_GITHUB_AUTH_TOKEN "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"
+#macro TOME_GITHUB_AUTH_TOKEN "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"
 
 // Your Github username
 #macro TOME_GITHUB_USERNAME "NazelrodDustin"
