@@ -1,0 +1,26 @@
+{
+  "FolderOrderSettings": [
+    {"name":"Animation Curves","order":12,"path":"folders/Animation Curves.yy",},
+    {"name":"Extensions","order":14,"path":"folders/Extensions.yy",},
+    {"name":"_system","order":1,"path":"folders/Extensions/Tome/_system.yy",},
+    {"name":"Notes","order":13,"path":"folders/Notes.yy",},
+    {"name":"Rooms","order":10,"path":"folders/Rooms.yy",},
+    {"name":"Visage","order":15,"path":"folders/Visage.yy",},
+    {"name":"Fonts","order":3,"path":"folders/Visage/Fonts.yy",},
+    {"name":"Objects","order":4,"path":"folders/Visage/Objects.yy",},
+    {"name":"Shaders","order":2,"path":"folders/Visage/Shaders.yy",},
+    {"name":"Sprites","order":1,"path":"folders/Visage/Sprites.yy",},
+  ],
+  "ResourceOrderSettings": [
+    {"name":"__tomeController","order":1,"path":"objects/__tomeController/__tomeController.yy",},
+    {"name":"tomeConfig","order":2,"path":"scripts/tomeConfig/tomeConfig.yy",},
+    {"name":"tomeDocSetup","order":3,"path":"scripts/tomeDocSetup/tomeDocSetup.yy",},
+    {"name":"__visage","order":2,"path":"scripts/__visage/__visage.yy",},
+    {"name":"__visageWindows","order":1,"path":"scripts/__visageWindows/__visageWindows.yy",},
+    {"name":"elastic_out","order":1,"path":"animcurves/elastic_out/elastic_out.yy",},
+    {"name":"__tomeInit","order":3,"path":"scripts/__tomeInit/__tomeInit.yy",},
+    {"name":"__tomeFuncQueue","order":2,"path":"scripts/__tomeFuncQueue/__tomeFuncQueue.yy",},
+    {"name":"spr_testTexture","order":1,"path":"sprites/spr_testTexture/spr_testTexture.yy",},
+    {"name":"__tomeSystemFunctions","order":4,"path":"scripts/__tomeSystemFunctions/__tomeSystemFunctions.yy",},
+  ],
+}
