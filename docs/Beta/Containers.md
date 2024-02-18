@@ -28,8 +28,8 @@ Sets the movement animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the movement duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_entrance_movement_position_start(container, startX, startY)` → *void*
 Sets the starting movement position for specified container.
@@ -64,8 +64,8 @@ Sets the rotation animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the rotation duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_entrance_rotation_start(container, startAngle)` → *void*
 Sets the starting rotation angle for specified container.
@@ -98,8 +98,8 @@ Sets the scale animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the scale duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_entrance_scale_start(container, startScale)` → *void*
 Sets the starting scale for specified container.
@@ -132,8 +132,8 @@ Sets the alpha animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the alpha duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_entrance_alpha_start(container, startAlpha)` → *void*
 Sets the starting alpha for specified container.
@@ -149,7 +149,7 @@ Sets the starting alpha for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the ending alpha in. |
-|`endSize` |real |The animation ending alpha to set in the container. |
+|`endAlpha` |real |The animation ending alpha to set in the container. |
 
 ## `visage_container_set_exit_movement_animation(container, animationCurve, isReversed)` → *void*
 Sets the movement animation curve for specified container.
@@ -166,8 +166,8 @@ Sets the movement animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the movement duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_exit_movement_position_start(container, startX, startY)` → *void*
 Sets the starting movement position for specified container.
@@ -202,8 +202,8 @@ Sets the rotation animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the rotation duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_exit_rotation_start(container, startAngle)` → *void*
 Sets the starting rotation angle for specified container.
@@ -236,8 +236,8 @@ Sets the scale animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the scale duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_exit_scale_start(container, startScale)` → *void*
 Sets the starting scale for specified container.
@@ -270,8 +270,8 @@ Sets the alpha animation duration and offset for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the alpha duration in. |
-|`duration` |real |The animation duration to set in the container. |
-|`offset` |real |The starting offset of the animation. |
+|`duration` |real |The animation duration (in ms) to set in the container. |
+|`offset` |real |The starting offset (in ms) of the animation. |
 
 ## `visage_container_set_exit_alpha_start(container, startAlpha)` → *void*
 Sets the starting alpha for specified container.
@@ -287,4 +287,4 @@ Sets the starting alpha for specified container.
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`container` |struct |The container to set the ending alpha in. |
-|`endSize` |real |The animation ending alpha to set in the container. |
+|`endAlpha` |real |The animation ending alpha to set in the container. |
