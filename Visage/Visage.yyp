@@ -41,6 +41,7 @@
     {"id":{"name":"__tomeController","path":"objects/__tomeController/__tomeController.yy",},},
     {"id":{"name":"__tome","path":"scripts/__tome/__tome.yy",},},
     {"id":{"name":"tomeConfig","path":"scripts/tomeConfig/tomeConfig.yy",},},
+    {"id":{"name":"tomeConfigBlank","path":"scripts/tomeConfigBlank/tomeConfigBlank.yy",},},
     {"id":{"name":"tomeDocSetup","path":"scripts/tomeDocSetup/tomeDocSetup.yy",},},
     {"id":{"name":"__visageController","path":"objects/__visageController/__visageController.yy",},},
     {"id":{"name":"__visage","path":"scripts/__visage/__visage.yy",},},
