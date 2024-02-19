@@ -1,3 +1,4 @@
+/*
 //Whether Tome should run or not 
 #macro TOME_ENABLED true
 
