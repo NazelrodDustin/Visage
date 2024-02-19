@@ -39,6 +39,7 @@
   },
   "resources": [
     {"id":{"name":"__tomeController","path":"objects/__tomeController/__tomeController.yy",},},
+    {"id":{"name":"obj_test","path":"objects/obj_test/obj_test.yy",},},
     {"id":{"name":"__tome","path":"scripts/__tome/__tome.yy",},},
     {"id":{"name":"tomeConfig","path":"scripts/tomeConfig/tomeConfig.yy",},},
     {"id":{"name":"tomeConfigBlank","path":"scripts/tomeConfigBlank/tomeConfigBlank.yy",},},
