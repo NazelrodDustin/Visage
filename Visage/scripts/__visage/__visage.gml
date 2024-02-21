@@ -88,7 +88,7 @@ visageContainer = function() constructor{
 	_animationExitScaleProgress = 0;
 	_animationExitScaleIsPlaying = false;
 	
-	_animationExitAlphaCurve = noone;
+	_animationExitAlphaCurve = noone;	
 	_animationExitAlphaReversed = false;
 	_animationExitAlphaDuration = 0;
 	_animationExitAlphaOffset = 0;
@@ -142,7 +142,43 @@ visageContainer = function() constructor{
 		_animationEntranceAlphaIsPlaying = false;
 	}
 	
+	animationExitePlay = function(){
+		_anixiteMovementStartingTime = current_time;
+		_animationExitRotationStartingTime = current_time;
+		_animationExitScaleStartingTime = current_time;
+		_animationExitAlphaStartingTime = current_time;
+		
+		_animationExitMovementIsPlaying = true;
+		_animationExitRotationIsPlaying = true;
+		_animationEntranceScaleIsPlaying = true;
+		_animationEntranceAlphaIsPlaying = true;
+	}
 	
+	animationExitIsPlaying = function(){
+		return (_animationExitMovementIsPlaying ||
+				_animationExitRotationIsPlaying ||
+				_animationExitScaleIsPlaying ||
+				_animationExitAlphaIsPlaying);
+	}
+	
+	animationExitReset = function(){
+		_animationExitMovementProgress = 0;
+		_animationExitRotationProgress = 0;
+		_animationExitScaleProgress = 0;
+		_animationExitAlphaProgress = 0;
+		
+		_animationExitMovementStartingTime = 0;
+		_animationExitRotationStartingTime = 0;
+		_animationExitScaleStartingTime = 0;
+		_animationExitAlphaStartingTime = 0;
+		
+		_animationExitMovementIsPlaying = false;
+		_animationExitRotationIsPlaying = false;
+		_animationExitScaleIsPlaying = false;
+		_animationExitAlphaIsPlaying = false;
+	}
+
+
 	#region // Movement
 	setEntranceAnimationMovementCurve = function(_animationCurve, _isReversed){
 		_animationEntranceMovementCurve = _animationCurve;
