@@ -1,7 +1,7 @@
 visageContainer = function() constructor{
 	// Attribute variables
-	_cx = 0;
-	_cy = 0;
+	_x = 0;
+	_y = 0;
 	_rotation = 0;
 	_scale = 1;
 	_alpha = 1;
