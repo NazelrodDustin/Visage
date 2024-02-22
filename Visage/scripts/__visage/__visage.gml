@@ -1,4 +1,14 @@
-visageContainer = function() constructor{
+
+function visage_track_element(element){
+	__visageController.track_element(element);
+}
+
+function visage_remove_tracked_element(element){
+	__visageController.remove_tracked_element(element);
+}
+
+
+function visageContainer() constructor{
 	// Attribute variables
 	_x = 0;
 	_y = 0;
@@ -7,7 +17,7 @@ visageContainer = function() constructor{
 	_alpha = 1;
 	_isVisible = true;
 	_parentElement = noone;
-	_subElements = []
+	_subElements = [];
 	
 	#region //Animation variables
 	
@@ -107,15 +117,18 @@ visageContainer = function() constructor{
 	#region // Animation methods
 	
 	animationEntrancePlay = function(){
-		_animationEntranceMovementStartingTime = current_time;
-		_animationEntranceRotationStartingTime = current_time;
-		_animationEntranceScaleStartingTime = current_time;
-		_animationEntranceAlphaStartingTime = current_time;
+		show_debug_message(string("Movement Playing: {0}\nRotation Playing: {1}\nScale Playing: {2}\nAlpha Playing: {3}\n", _animationEntranceMovementIsPlaying, _animationEntranceRotationIsPlaying, _animationEntranceScaleIsPlaying, _animationEntranceAlphaIsPlaying))
+		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
+			_animationEntranceMovementStartingTime = current_time;
+			_animationEntranceRotationStartingTime = current_time;
+			_animationEntranceScaleStartingTime = current_time;
+			_animationEntranceAlphaStartingTime = current_time;
 		
-		_animationEntranceMovementIsPlaying = true;
-		_animationEntranceRotationIsPlaying = true;
-		_animationEntranceScaleIsPlaying = true;
-		_animationEntranceAlphaIsPlaying = true;
+			_animationEntranceMovementIsPlaying = true;
+			_animationEntranceRotationIsPlaying = true;
+			_animationEntranceScaleIsPlaying = true;
+			_animationEntranceAlphaIsPlaying = true;
+		}
 	}
 	
 	animationEntranceIsPlaying = function(){
@@ -142,7 +155,7 @@ visageContainer = function() constructor{
 		_animationEntranceAlphaIsPlaying = false;
 	}
 	
-	animationExitePlay = function(){
+	animationExitPlay = function(){
 		_anixiteMovementStartingTime = current_time;
 		_animationExitRotationStartingTime = current_time;
 		_animationExitScaleStartingTime = current_time;
@@ -176,6 +189,30 @@ visageContainer = function() constructor{
 		_animationExitRotationIsPlaying = false;
 		_animationExitScaleIsPlaying = false;
 		_animationExitAlphaIsPlaying = false;
+	}
+
+	_update = function(){
+		if (animationEntranceIsPlaying()){
+			_animationEntranceMovementProgress = clamp(max((current_time - _animationEntranceMovementStartingTime) - _animationEntranceMovementOffset, 0) / _animationEntranceMovementDuration, 0, 1);
+			_animationEntranceRotationProgress = clamp(max((current_time - _animationEntranceRotationStartingTime) - _animationEntranceRotationOffset, 0) / _animationEntranceRotationDuration, 0, 1);
+			_animationEntranceScaleProgress = clamp(max((current_time - _animationEntranceScaleStartingTime) - _animationEntranceScaleOffset, 0) / _animationEntranceScaleDuration, 0, 1);
+			_animationEntranceAlphaProgress = clamp(max((current_time - _animationEntranceAlphaStartingTime) - _animationEntranceAlphaOffset, 0) / _animationEntranceAlphaDuration, 0, 1);
+
+			show_debug_message(string("Movement Progress: {0}\nRotation Progress: {1}\nScale Progress: {2}\nAlpha Progress: {3}\n", _animationEntranceMovementProgress, _animationEntranceRotationProgress, _animationEntranceScaleProgress, _animationEntranceAlphaProgress, ))
+			
+			_animationEntranceMovementIsPlaying = _animationEntranceMovementProgress < 1;
+			_animationEntranceRotationIsPlaying = _animationEntranceRotationProgress < 1;
+			_animationEntranceScaleIsPlaying = _animationEntranceScaleProgress < 1;
+			_animationEntranceAlphaIsPlaying = _animationEntranceAlphaProgress < 1;
+
+
+			_x = _animationEntranceMovementStartX + ((_animationEntranceMovementEndX - _animationEntranceMovementStartX) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceMovementCurve, 0), _animationEntranceMovementProgress));
+			_y = _animationEntranceMovementStartY + ((_animationEntranceMovementEndY - _animationEntranceMovementStartY) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceMovementCurve, 0), _animationEntranceMovementProgress));
+		}
+	}
+
+	_draw = function(){
+		draw_sprite(spr_testTexture, 0, _x, _y);
 	}
 
 
@@ -232,11 +269,11 @@ visageContainer = function() constructor{
 		_animationEntranceRotationOffset = _offset;
 	}
 	
-	setEntranceAnimationRotationPositionStart = function(_startAngle){
+	setEntranceAnimationRotationStart = function(_startAngle){
 		_animationEntranceRotationStart = _startAngle
 	}
 	
-	setEntranceAnimationRotationPositionEnd = function(_endAngle){
+	setEntranceAnimationRotationEnd = function(_endAngle){
 		_animationEntranceRotationEnd = _endAngle;
 	}
 	
@@ -250,11 +287,11 @@ visageContainer = function() constructor{
 		_animationExitRotationOffset = _offset;
 	}
 	
-	setExitAnimationRotationPositionStart = function(_startAngle){
+	setExitAnimationRotationStart = function(_startAngle){
 		_animationExitRotationStart = _startAngle;
 	}
 	
-	setExitAnimationRotationPositionEnd = function(_endAngle){
+	setExitAnimationRotationEnd = function(_endAngle){
 		_animationExitRotationEnd = _endAngle;
 	}
 	#endregion
@@ -270,11 +307,11 @@ visageContainer = function() constructor{
 		_animationEntranceScaleOffset = _offset;
 	}
 	
-	setEntranceAnimationScalePositionStart = function(_startScale){
+	setEntranceAnimationScaleStart = function(_startScale){
 		_animationEntranceScaleStart = _startScale
 	}
 	
-	setEntranceAnimationScalePositionEnd = function(_endScale){
+	setEntranceAnimationScaleEnd = function(_endScale){
 		_animationEntranceScaleEnd = _endScale;
 	}
 	
@@ -288,11 +325,11 @@ visageContainer = function() constructor{
 		_animationExitScaleOffset = _offset;
 	}
 	
-	setExitAnimationScalePositionStart = function(_startScale){
+	setExitAnimationScaleStart = function(_startScale){
 		_animationExitScaleStart = _startScale;
 	}
 	
-	setExitAnimationScalePositionEnd = function(_endScale){
+	setExitAnimationScaleEnd = function(_endScale){
 		_animationExitScaleEnd = _endScale;
 	}
 	#endregion
@@ -308,11 +345,11 @@ visageContainer = function() constructor{
 		_animationEntranceAlphaOffset = _offset;
 	}
 	
-	setEntranceAnimationAlphaPositionStart = function(_startAlpha){
+	setEntranceAnimationAlphaStart = function(_startAlpha){
 		_animationEntranceAlphaStart = _startAlpha
 	}
 	
-	setEntranceAnimationAlphaPositionEnd = function(_endAlpha){
+	setEntranceAnimationAlphaEnd = function(_endAlpha){
 		_animationEntranceAlphaEnd = _endAlpha;
 	}
 	
@@ -326,18 +363,16 @@ visageContainer = function() constructor{
 		_animationExitAlphaOffset = _offset;
 	}
 	
-	setExitAnimationAlphaPositionStart = function(_startAlpha){
+	setExitAnimationAlphaStart = function(_startAlpha){
 		_animationExitAlphaStart = _startAlpha;
 	}
 	
-	setExitAnimationAlphaPositionEnd = function(_endAlpha){
+	setExitAnimationAlphaEnd = function(_endAlpha){
 		_animationExitAlphaEnd = _endAlpha;
 	}
 	#endregion
 	
-
 	#endregion
-	
 	
 	#endregion
 }
