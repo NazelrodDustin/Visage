@@ -156,15 +156,17 @@ function visageContainer() constructor{
 	}
 	
 	animationExitPlay = function(){
-		_anixiteMovementStartingTime = current_time;
-		_animationExitRotationStartingTime = current_time;
-		_animationExitScaleStartingTime = current_time;
-		_animationExitAlphaStartingTime = current_time;
+		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
+			_animationExitMovementStartingTime = current_time;
+			_animationExitRotationStartingTime = current_time;
+			_animationExitScaleStartingTime = current_time;
+			_animationExitAlphaStartingTime = current_time;
 		
-		_animationExitMovementIsPlaying = true;
-		_animationExitRotationIsPlaying = true;
-		_animationEntranceScaleIsPlaying = true;
-		_animationEntranceAlphaIsPlaying = true;
+			_animationExitMovementIsPlaying = true;
+			_animationExitRotationIsPlaying = true;
+			_animationEntranceScaleIsPlaying = true;
+			_animationEntranceAlphaIsPlaying = true;
+		}
 	}
 	
 	animationExitIsPlaying = function(){
@@ -206,13 +208,62 @@ function visageContainer() constructor{
 			_animationEntranceAlphaIsPlaying = _animationEntranceAlphaProgress < 1;
 
 
-			_x = _animationEntranceMovementStartX + ((_animationEntranceMovementEndX - _animationEntranceMovementStartX) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceMovementCurve, 0), _animationEntranceMovementProgress));
-			_y = _animationEntranceMovementStartY + ((_animationEntranceMovementEndY - _animationEntranceMovementStartY) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceMovementCurve, 0), _animationEntranceMovementProgress));
+			if (_animationEntranceMovementCurve != noone){
+				_x = _animationEntranceMovementStartX + ((_animationEntranceMovementEndX - _animationEntranceMovementStartX) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceMovementCurve, 0), _animationEntranceMovementProgress));
+				_y = _animationEntranceMovementStartY + ((_animationEntranceMovementEndY - _animationEntranceMovementStartY) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceMovementCurve, 0), _animationEntranceMovementProgress));
+			}
+			
+			if (_animationEntranceRotationCurve != noone){
+				_rotation = _animationEntranceRotationStart + ((_animationEntranceRotationEnd - _animationEntranceRotationStart) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceRotationCurve, 0), _animationEntranceRotationProgress));
+			}
+			
+			if (_animationEntranceScaleCurve != noone){
+				_scale = _animationEntranceScaleStart + ((_animationEntranceScaleEnd - _animationEntranceScaleStart) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceScaleCurve, 0), _animationEntranceScaleProgress));
+			}
+			
+			if (_animationEntranceAlphaCurve != noone){
+				_alpha = _animationEntranceAlphaStart + ((_animationEntranceAlphaEnd - _animationEntranceAlphaStart) * animcurve_channel_evaluate(animcurve_get_channel(_animationEntranceAlphaCurve, 0), _animationEntranceAlphaProgress));
+			}
 		}
+		
+		if (animationExitIsPlaying()){
+            _animationExitMovementProgress = clamp(max((current_time - _animationExitMovementStartingTime) - _animationExitMovementOffset, 0) / _animationExitMovementDuration, 0, 1);
+            _animationExitRotationProgress = clamp(max((current_time - _animationExitRotationStartingTime) - _animationExitRotationOffset, 0) / _animationExitRotationDuration, 0, 1);
+            _animationExitScaleProgress = clamp(max((current_time - _animationExitScaleStartingTime) - _animationExitScaleOffset, 0) / _animationExitScaleDuration, 0, 1);
+            _animationExitAlphaProgress = clamp(max((current_time - _animationExitAlphaStartingTime) - _animationExitAlphaOffset, 0) / _animationExitAlphaDuration, 0, 1);
+
+            show_debug_message(string("Movement Progress: {0}\nRotation Progress: {1}\nScale Progress: {2}\nAlpha Progress: {3}\n", _animationExitMovementProgress, _animationExitRotationProgress, _animationExitScaleProgress, _animationExitAlphaProgress, ))
+            
+            _animationExitMovementIsPlaying = _animationExitMovementProgress < 1;
+            _animationExitRotationIsPlaying = _animationExitRotationProgress < 1;
+            _animationExitScaleIsPlaying = _animationExitScaleProgress < 1;
+            _animationExitAlphaIsPlaying = _animationExitAlphaProgress < 1;
+
+
+            if (_animationExitMovementCurve != noone){
+                _x = _animationExitMovementStartX + ((_animationExitMovementEndX - _animationExitMovementStartX) * animcurve_channel_evaluate(animcurve_get_channel(_animationExitMovementCurve, 0), _animationExitMovementProgress));
+                _y = _animationExitMovementStartY + ((_animationExitMovementEndY - _animationExitMovementStartY) * animcurve_channel_evaluate(animcurve_get_channel(_animationExitMovementCurve, 0), _animationExitMovementProgress));
+            }
+            
+            if (_animationExitRotationCurve != noone){
+                _rotation = _animationExitRotationStart + ((_animationExitRotationEnd - _animationExitRotationStart) * animcurve_channel_evaluate(animcurve_get_channel(_animationExitRotationCurve, 0), _animationExitRotationProgress));
+            }
+            
+            if (_animationExitScaleCurve != noone){
+                _scale = _animationExitScaleStart + ((_animationExitScaleEnd - _animationExitScaleStart) * animcurve_channel_evaluate(animcurve_get_channel(_animationExitScaleCurve, 0), _animationExitScaleProgress));
+            }
+            
+            if (_animationExitAlphaCurve != noone){
+                _alpha = _animationExitAlphaStart + ((_animationExitAlphaEnd - _animationExitAlphaStart) * animcurve_channel_evaluate(animcurve_get_channel(_animationExitAlphaCurve, 0), _animationExitAlphaProgress));
+            }
+        }
+
+		
+	
 	}
 
 	_draw = function(){
-		draw_sprite(spr_testTexture, 0, _x, _y);
+		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 	}
 
 
