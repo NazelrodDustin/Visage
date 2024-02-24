@@ -34,7 +34,7 @@ Sets the starting movement position for the entrance animation.
 
 **Returns:** This container for method chaining.
 
-## `setEntranceAnimationMovementPositionEnd(endX, endY)` → *struct*
+### `.setEntranceAnimationMovementPositionEnd(endX, endY)` → *struct*
 Sets the ending movement position for the entrance animation.
 
 | Parameter | Datatype  | Purpose |
