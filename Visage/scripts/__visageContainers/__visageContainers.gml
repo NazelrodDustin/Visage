@@ -5,367 +5,693 @@
 
 #region /// @text ## Methods <br>
 
-/// @func visage_container_create(config)
-/// @desc Creates a new container based off a configuration profile.
-/// @returns {struct} Container configuration profile.
-function visage_container_create(){
-	return new visageContainer();
+
+/// @constructor
+/// @func visageContainer()
+
+function visageContainer() constructor{
+	// Attribute variables
+	_x = 0;
+	_y = 0;
+	_rotation = 0;
+	_scale = 1;
+	_alpha = 1;
+	_isVisible = true;
+	_parentElement = noone;
+	_subElements = [];
+	_elementSprite = noone;
+	_self = self;
+	
+	#region //Animation variables
+	
+	#region //Entrance animation
+	_animationEntranceMovementCurve = noone;
+	_animationEntranceMovementReversed = false;
+	_animationEntranceMovementDuration = 0;
+	_animationEntranceMovementOffset = 0;
+	_animationEntranceMovementStartX = 0;
+	_animationEntranceMovementStartY = 0;
+	_animationEntranceMovementEndX = 0;
+	_animationEntranceMovementEndY = 0;
+	_animationEntranceMovementStartingTime = 0;
+	_animationEntranceMovementProgress = 0;
+	_animationEntranceMovementIsPlaying = false;
+	
+	_animationEntranceRotationCurve = noone;
+	_animationEntranceRotationReversed = false;
+	_animationEntranceRotationDuration = 0;
+	_animationEntranceRotationOffset = 0;
+	_animationEntranceRotationStart = 0;
+	_animationEntranceRotationEnd = 0;
+	_animationEntranceRotationStartingTime = 0;
+	_animationEntranceRotationProgress = 0;
+	_animationEntranceRotationIsPlaying = false;
+	
+	_animationEntranceScaleCurve = noone;
+	_animationEntranceScaleReversed = false;
+	_animationEntranceScaleDuration = 0;
+	_animationEntranceScaleOffset = 0;
+	_animationEntranceScaleStart = 1;
+	_animationEntranceScaleEnd = 1;
+	_animationEntranceScaleStartingTime = 0;
+	_animationEntranceScaleProgress = 0;
+	_animationEntranceScaleIsPlaying = false;
+	
+	_animationEntranceAlphaCurve = noone;
+	_animationEntranceAlphaReversed = false;
+	_animationEntranceAlphaDuration = 0;
+	_animationEntranceScaleOffset = 0;
+	_animationEntranceAlphaStart = 1;
+	_animationEntranceAlphaEnd = 1;
+	_animationEntranceAlphaStartingTime = 0;
+	_animationEntranceAlphaProgress = 0;
+	_animationEntranceAlphaIsPlaying = false;
+	#endregion
+	
+	#region //Exit animation
+	_animationExitMovementCurve = noone;
+	_animationExitMovementReversed = false;
+	_animationExitMovementDuration = 0;
+	_animationExitMovementOffset = 0;
+	_animationExitMovementStartX = 0;
+	_animationExitMovementStartY = 0;
+	_animationExitMovementEndX = 0;
+	_animationExitMovementEndY = 0;
+	_animationExitMovementStartingTime = 0;
+	_animationExitMovementProgress = 0;
+	_animationExitMovementIsPlaying = false;
+	
+	_animationExitRotationCurve = noone;
+	_animationExitRotationReversed = false;
+	_animationExitRotationDuration = 0;
+	_animationExitRotationOffset = 0;
+	_animationExitRotationStart = 0;
+	_animationExitRotationEnd = 0;
+	_animationExitRotationStartingTime = 0;
+	_animationExitRotationProgress = 0;
+	_animationExitRotationIsPlaying = false;
+
+	_animationExitScaleCurve = noone;
+	_animationExitScaleReversed = false;
+	_animationExitScaleDuration = 0;
+	_animationExitScaleOffset = 0;
+	_animationExitScaleStart = 1;
+	_animationExitScaleEnd = 1;
+	_animationExitScaleStartingTime = 0;
+	_animationExitScaleProgress = 0;
+	_animationExitScaleIsPlaying = false;
+	
+	_animationExitAlphaCurve = noone;	
+	_animationExitAlphaReversed = false;
+	_animationExitAlphaDuration = 0;
+	_animationExitAlphaOffset = 0;
+	_animationExitAlphaStart = 1;
+	_animationExitAlphaEnd = 1;
+	_animationExitAlphaStartingTime = 0;
+	_animationExitAlphaProgress = 0;
+	_animationExitAlphaIsPlaying = false;
+	#endregion
+
+	#endregion
+	
+	
+	#region // Internal methods
+	
+		_update = function(){
+		if (animationEntranceIsPlaying()){			
+			if (_animationEntranceMovementCurve != noone){
+				_animationEntranceMovementProgress = clamp(max((current_time - _animationEntranceMovementStartingTime) - _animationEntranceMovementOffset, 0) / _animationEntranceMovementDuration, 0, 1);
+				
+				_animationEntranceMovementIsPlaying = _animationEntranceMovementProgress < 1;
+				
+				_x = _animationEntranceMovementStartX + 
+					((_animationEntranceMovementEndX - _animationEntranceMovementStartX) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationEntranceMovementCurve, 0), 
+						_animationEntranceMovementReversed ? 1 - _animationEntranceMovementProgress : _animationEntranceMovementProgress)
+					);
+					
+				_y = _animationEntranceMovementStartY + 
+					((_animationEntranceMovementEndY - _animationEntranceMovementStartY) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationEntranceMovementCurve, 0), 
+						_animationEntranceMovementReversed ? 1 - _animationEntranceMovementProgress : _animationEntranceMovementProgress)
+					);
+			}else{
+				_animationEntranceMovementIsPlaying = false;
+			}
+			
+			if (_animationEntranceRotationCurve != noone){
+				_animationEntranceRotationProgress = clamp(max((current_time - _animationEntranceRotationStartingTime) - _animationEntranceRotationOffset, 0) / _animationEntranceRotationDuration, 0, 1);
+				
+				_animationEntranceRotationIsPlaying = _animationEntranceRotationProgress < 1;
+				
+				_rotation = _animationEntranceRotationStart + 
+					((_animationEntranceRotationEnd - _animationEntranceRotationStart) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationEntranceRotationCurve, 0), 
+						_animationEntranceRotationReversed ? 1 - _animationEntranceRotationProgress : _animationEntranceRotationProgress)
+					);
+			}else{
+				_animationEntranceRotationIsPlaying = false;
+			}
+			
+			if (_animationEntranceScaleCurve != noone){
+				_animationEntranceScaleProgress = clamp(max((current_time - _animationEntranceScaleStartingTime) - _animationEntranceScaleOffset, 0) / _animationEntranceScaleDuration, 0, 1);
+				
+				_animationEntranceScaleIsPlaying = _animationEntranceScaleProgress < 1;				
+				
+				_scale = _animationEntranceScaleStart + 
+					((_animationEntranceScaleEnd - _animationEntranceScaleStart) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationEntranceScaleCurve, 0),
+						_animationEntranceScaleReversed ? 1 - _animationEntranceScaleProgress : _animationEntranceScaleProgress)
+					);
+			}else{
+				_animationEntranceScaleIsPlaying = false;
+			}
+
+		
+			if (_animationEntranceAlphaCurve != noone){
+				_animationEntranceAlphaProgress = clamp(max((current_time - _animationEntranceAlphaStartingTime) - _animationEntranceAlphaOffset, 0) / _animationEntranceAlphaDuration, 0, 1);
+			
+				_animationEntranceAlphaIsPlaying = _animationEntranceAlphaProgress < 1;	
+
+				_alpha = _animationEntranceAlphaStart + 
+					((_animationEntranceAlphaEnd - _animationEntranceAlphaStart) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationEntranceAlphaCurve, 0),
+						_animationEntranceAlphaReversed ? 1 - _animationEntranceAlphaProgress : _animationEntranceAlphaProgress)
+					);
+			}else{
+				_animationEntranceAlphaIsPlaying = false;
+			}
+			
+			show_debug_message(string("Movement Progress: {0}\nRotation Progress: {1}\nScale Progress: {2}\nAlpha Progress: {3}\n", _animationEntranceMovementProgress, _animationEntranceRotationProgress, _animationEntranceScaleProgress, _animationEntranceAlphaProgress, ))
+		}
+		
+		if (animationExitIsPlaying()){
+            if (_animationExitMovementCurve != noone){
+				_animationExitMovementProgress = clamp(max((current_time - _animationExitMovementStartingTime) - _animationExitMovementOffset, 0) / _animationExitMovementDuration, 0, 1);
+				
+				_animationExitMovementIsPlaying = _animationExitMovementProgress < 1;
+				
+				_x = _animationExitMovementStartX + 
+					((_animationExitMovementEndX - _animationExitMovementStartX) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationExitMovementCurve, 0), 
+						_animationExitMovementReversed ? 1 - _animationExitMovementProgress : _animationExitMovementProgress)
+					);
+					
+				_y = _animationExitMovementStartY + 
+					((_animationExitMovementEndY - _animationExitMovementStartY) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationExitMovementCurve, 0), 
+						_animationExitMovementReversed ? 1 - _animationExitMovementProgress : _animationExitMovementProgress)
+					);
+			}else{
+				_animationExitMovementIsPlaying = false;
+			}
+			
+			if (_animationExitRotationCurve != noone){
+				_animationExitRotationProgress = clamp(max((current_time - _animationExitRotationStartingTime) - _animationExitRotationOffset, 0) / _animationExitRotationDuration, 0, 1);
+				
+				_animationExitRotationIsPlaying = _animationExitRotationProgress < 1;
+				
+				_rotation = _animationExitRotationStart + 
+					((_animationExitRotationEnd - _animationExitRotationStart) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationExitRotationCurve, 0), 
+						_animationExitRotationReversed ? 1 - _animationExitRotationProgress : _animationExitRotationProgress)
+					);
+			}else{
+				_animationExitRotationIsPlaying = false;
+			}
+			
+			if (_animationExitScaleCurve != noone){
+				_animationExitScaleProgress = clamp(max((current_time - _animationExitScaleStartingTime) - _animationExitScaleOffset, 0) / _animationExitScaleDuration, 0, 1);
+				
+				_animationExitScaleIsPlaying = _animationExitScaleProgress < 1;				
+				
+				_scale = _animationExitScaleStart + 
+					((_animationExitScaleEnd - _animationExitScaleStart) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationExitScaleCurve, 0),
+						_animationExitScaleReversed ? 1 - _animationExitScaleProgress : _animationExitScaleProgress)
+					);
+			}else{
+				_animationExitScaleIsPlaying = false;
+			}
+
+		
+			if (_animationExitAlphaCurve != noone){
+				_animationExitAlphaProgress = clamp(max((current_time - _animationExitAlphaStartingTime) - _animationExitAlphaOffset, 0) / _animationExitAlphaDuration, 0, 1);
+			
+				_animationExitAlphaIsPlaying = _animationExitAlphaProgress < 1;	
+
+				_alpha = _animationExitAlphaStart + 
+					((_animationExitAlphaEnd - _animationExitAlphaStart) * 
+					animcurve_channel_evaluate(animcurve_get_channel(
+						_animationExitAlphaCurve, 0),
+						_animationExitAlphaReversed ? 1 - _animationExitAlphaProgress : _animationExitAlphaProgress)
+					);
+			}else{
+				_animationExitAlphaIsPlaying = false;
+			}
+			
+            show_debug_message(string("Movement Progress: {0}\nRotation Progress: {1}\nScale Progress: {2}\nAlpha Progress: {3}\n", _animationExitMovementProgress, _animationExitRotationProgress, _animationExitScaleProgress, _animationExitAlphaProgress, ))
+        }
+	}
+
+	_draw = function(){
+		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
+	}
+	#endregion
+	
+	#region // Animation methods
+	
+	animationEntrancePlay = function(){
+		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
+			_animationEntranceMovementStartingTime = current_time;
+			_animationEntranceRotationStartingTime = current_time;
+			_animationEntranceScaleStartingTime = current_time;
+			_animationEntranceAlphaStartingTime = current_time;
+		
+			_animationEntranceMovementIsPlaying = true;
+			_animationEntranceRotationIsPlaying = true;
+			_animationEntranceScaleIsPlaying = true;
+			_animationEntranceAlphaIsPlaying = true;
+			
+			return true;
+		}
+		return false;
+	}
+	
+	animationEntranceIsPlaying = function(){
+		return (_animationEntranceMovementIsPlaying ||
+				_animationEntranceRotationIsPlaying ||
+				_animationEntranceScaleIsPlaying ||
+				_animationEntranceAlphaIsPlaying);
+	}
+	
+	animationEntranceReset = function(){
+		_animationEntranceMovementProgress = 0;
+		_animationEntranceRotationProgress = 0;
+		_animationEntranceScaleProgress = 0;
+		_animationEntranceAlphaProgress = 0;
+		
+		_animationEntranceMovementStartingTime = 0;
+		_animationEntranceRotationStartingTime = 0;
+		_animationEntranceScaleStartingTime = 0;
+		_animationEntranceAlphaStartingTime = 0;
+		
+		_animationEntranceMovementIsPlaying = false;
+		_animationEntranceRotationIsPlaying = false;
+		_animationEntranceScaleIsPlaying = false;
+		_animationEntranceAlphaIsPlaying = false;
+	}
+	
+	animationExitPlay = function(){
+		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
+			_animationExitMovementStartingTime = current_time;
+			_animationExitRotationStartingTime = current_time;
+			_animationExitScaleStartingTime = current_time;
+			_animationExitAlphaStartingTime = current_time;
+		
+			_animationExitMovementIsPlaying = true;
+			_animationExitRotationIsPlaying = true;
+			_animationEntranceScaleIsPlaying = true;
+			_animationEntranceAlphaIsPlaying = true;
+			return true;
+		}
+		return false;
+	}
+	
+	animationExitIsPlaying = function(){
+		return (_animationExitMovementIsPlaying ||
+				_animationExitRotationIsPlaying ||
+				_animationExitScaleIsPlaying ||
+				_animationExitAlphaIsPlaying);
+	}
+	
+	animationExitReset = function(){
+		_animationExitMovementProgress = 0;
+		_animationExitRotationProgress = 0;
+		_animationExitScaleProgress = 0;
+		_animationExitAlphaProgress = 0;
+		
+		_animationExitMovementStartingTime = 0;
+		_animationExitRotationStartingTime = 0;
+		_animationExitScaleStartingTime = 0;
+		_animationExitAlphaStartingTime = 0;
+		
+		_animationExitMovementIsPlaying = false;
+		_animationExitRotationIsPlaying = false;
+		_animationExitScaleIsPlaying = false;
+		_animationExitAlphaIsPlaying = false;
+	}
+
+
+
+
+	#region // Movement
+	/// @method setEntranceAnimationMovementCurve(animationCurve, isReversed)
+	/// @desc Sets the movement animation curve for the entrance animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationMovementCurve = function(_animationCurve, _isReversed){
+		_animationEntranceMovementCurve = _animationCurve;
+		_animationEntranceMovementReversed = _isReversed;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationMovementTiming(duration, offset)
+	/// @desc Sets the movement animation duration and offset for the entrance animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationMovementTiming = function(_duration, _offset){
+		_animationEntranceMovementDuration = _duration;
+		_animationEntranceMovementOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationMovementPositionStart(startX, startY)
+	/// @desc Sets the starting movement position for the entrance animation.
+	/// @param {real} startX The animation starting x position to set in the container.
+	/// @param {real} startY The animation starting y position to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationMovementPositionStart = function(_startX, _startY){
+		_animationEntranceMovementStartX = _startX;
+		_animationEntranceMovementStartY = _startY;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationMovementPositionEnd(endX, endY)
+	/// @desc Sets the ending movement position for the entrance animation.
+	/// @param {real} endX The animation ending x position to set in the container.
+	/// @param {real} endY The animation ending y position to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationMovementPositionEnd = function(_endX, _endY){
+		_animationEntranceMovementEndX = _endX;
+		_animationEntranceMovementEndY = _endY;
+		return _self;
+	}
+	
+	/// @method setExitAnimationMovementCurve(animationCurve, isReversed)
+	/// @desc Sets the movement animation curve for the exit animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationMovementCurve = function(_animationCurve, _isReversed){
+		_animationExitMovementCurve = _animationCurve;
+		_animationExitMovementReversed = _isReversed;
+		return _self;
+	}
+	
+	/// @method setExitAnimationMovementTiming(duration, offset)
+	/// @desc Sets the movement animation duration and offset for the exit animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationMovementTiming = function(_duration, _offset){
+		_animationExitMovementDuration = _duration;
+		_animationExitMovementOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setExitAnimationMovementPositionStart(startX, startY)
+	/// @desc Sets the starting movement position for the exit animation.
+	/// @param {real} startX The animation starting x position to set in the container.
+	/// @param {real} startY The animation starting y position to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationMovementPositionStart = function(_startX, _startY){
+		_animationExitMovementStartX = _startX;
+		_animationExitMovementStartY = _startY;
+		return _self;
+	}
+
+	/// @method setExitAnimationMovementPositionEnd(endX, endY)
+	/// @desc Sets the ending movement position for the exit animation.
+	/// @param {real} endX The animation ending x position to set in the container.
+	/// @param {real} endY The animation ending y position to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationMovementPositionEnd = function(_endX, _endY){
+		_animationExitMovementEndX = _endX;
+		_animationExitMovementEndY = _endY;
+		return _self;
+	}
+	#endregion
+	
+	#region // Rotation
+	/// @method setEntranceAnimationRotationCurve(animationCurve, isReversed)
+	/// @desc Sets the rotation animation curve for the entrance animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationRotationCurve = function(_animationCurve, _isReversed){
+		_animationEntranceRotationCurve = _animationCurve;
+		_animationEntranceRotationReversed = _isReversed;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationRotationTiming(duration, offset)
+	/// @desc Sets the rotation animation duration and offset for the entrance animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationRotationTiming = function(_duration, _offset){
+		_animationEntranceRotationDuration = _duration;
+		_animationEntranceRotationOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationRotationStart(startAngle)
+	/// @desc Sets the starting rotation angle for the entrance animation.
+	/// @param {real} startAngle The animation starting rotation angle to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationRotationStart = function(_startAngle){
+		_animationEntranceRotationStart = _startAngle;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationRotationEnd(endAngle)
+	/// @desc Sets the ending rotation angle for the entrance animation.
+	/// @param {real} endAngle The animation ending rotation angle to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationRotationEnd = function(_endAngle){
+		_animationEntranceRotationEnd = _endAngle;
+		return _self;
+	}
+	
+	/// @method setExitAnimationRotationCurve(animationCurve, isReversed)
+	/// @desc Sets the rotation animation curve for the exit animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationRotationCurve = function(_animationCurve, _isReversed){
+		_animationExitRotationCurve = _animationCurve;
+		_animationExitRotationReversed = _isReversed;
+		return _self;
+	}
+
+	/// @method setExitAnimationRotationTiming(duration, offset)
+	/// @desc Sets the rotation animation duration and offset for the exit animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationRotationTiming = function(_duration, _offset){
+		_animationExitRotationDuration = _duration;
+		_animationExitRotationOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setExitAnimationRotationStart(startAngle)
+	/// @desc Sets the starting rotation angle for the exit animation.
+	/// @param {real} startAngle The animation starting rotation angle to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationRotationStart = function(_startAngle){
+		_animationExitRotationStart = _startAngle;
+		return _self;
+	}
+	
+	/// @method setExitAnimationRotationEnd(endAngle)
+	/// @desc Sets the ending rotation angle for the exit animation.
+	/// @param {real} endAngle The animation ending rotation angle to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationRotationEnd = function(_endAngle){
+		_animationExitRotationEnd = _endAngle;
+		return _self;
+	}
+	#endregion
+	
+	#region // Scale
+	
+	/// @method setEntranceAnimationScaleCurve(animationCurve, isReversed)
+	/// @desc Sets the scale animation curve for the entrance animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationScaleCurve = function(_animationCurve, _isReversed){
+		_animationEntranceScaleCurve = _animationCurve;
+		_animationEntranceScaleReversed = _isReversed;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationScaleTiming(duration, offset)
+	/// @desc Sets the scale animation duration and offset for the entrance animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationScaleTiming = function(_duration, _offset){
+		_animationEntranceScaleDuration = _duration;
+		_animationEntranceScaleOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationScaleStart(startScale)
+	/// @desc Sets the starting scale for the entrance animation.
+	/// @param {real} startScale The animation starting scale to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationScaleStart = function(_startScale){
+		_animationEntranceScaleStart = _startScale;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationScaleEnd(endScale)
+	/// @desc Sets the ending scale for the entrance animation.
+	/// @param {real} endScale The animation ending scale to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationScaleEnd = function(_endScale){
+		_animationEntranceScaleEnd = _endScale;
+		return _self;
+	}
+	
+	/// @method setExitAnimationScaleCurve(animationCurve, isReversed)
+	/// @desc Sets the scale animation curve for the exit animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationScaleCurve = function(_animationCurve, _isReversed){
+		_animationExitScaleCurve = _animationCurve;
+		_animationExitScaleReversed = _isReversed;
+		return _self;
+	}
+
+	/// @method setExitAnimationScaleTiming(duration, offset)
+	/// @desc Sets the scale animation duration and offset for the exit animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationScaleTiming = function(_duration, _offset){
+		_animationExitScaleDuration = _duration;
+		_animationExitScaleOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setExitAnimationScaleStart(startScale)
+	/// @desc Sets the starting scale for the exit animation.
+	/// @param {real} startScale The animation starting scale to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationScaleStart = function(_startScale){
+		_animationExitScaleStart = _startScale;
+		return _self;
+	}
+	
+	/// @method setExitAnimationScaleEnd(endScale)
+	/// @desc Sets the ending scale for the exit animation.
+	/// @param {real} endScale The animation ending scale to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationScaleEnd = function(_endScale){
+		_animationExitScaleEnd = _endScale;
+		return _self;
+	}
+	#endregion
+	
+	#region // Alpha
+	/// @method setEntranceAnimationAlphaCurve(animationCurve, isReversed)
+	/// @desc Sets the alpha animation curve for the entrance animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationAlphaCurve = function(_animationCurve, _isReversed){
+		_animationEntranceAlphaCurve = _animationCurve;
+		_animationEntranceAlphaReversed = _isReversed;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationAlphaTiming(duration, offset)
+	/// @desc Sets the alpha animation duration and offset for the entrance animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationAlphaTiming = function(_duration, _offset){
+		_animationEntranceAlphaDuration = _duration;
+		_animationEntranceAlphaOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationAlphaStart(startAlpha)
+	/// @desc Sets the starting alpha for the entrance animation.
+	/// @param {real} startAlpha The animation starting alpha to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationAlphaStart = function(_startAlpha){
+		_animationEntranceAlphaStart = _startAlpha;
+		return _self;
+	}
+	
+	/// @method setEntranceAnimationAlphaEnd(endAlpha)
+	/// @desc Sets the starting alpha for the entrance animation.
+	/// @param {real} endAlpha The animation ending alpha to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationAlphaEnd = function(_endAlpha){
+		_animationEntranceAlphaEnd = _endAlpha;
+		return _self;
+	}
+	
+	/// @method setExitAnimationAlphaCurve(animationCurve, isReversed)
+	/// @desc Sets the alpha animation curve for the exit animation.
+	/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
+	/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationAlphaCurve = function(_animationCurve, _isReversed){
+		_animationExitAlphaCurve = _animationCurve;
+		_animationExitAlphaReversed = _isReversed;
+		return _self;
+	}
+
+	/// @method setExitAnimationAlphaTiming(duration, offset)
+	/// @desc Sets the alpha animation duration and offset for the exit animation.
+	/// @param {real} duration The animation duration (in ms) to set in the container.
+	/// @param {real} offset The starting offset (in ms) of the animation.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationAlphaTiming = function(_duration, _offset){
+		_animationExitAlphaDuration = _duration;
+		_animationExitAlphaOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setExitAnimationAlphaStart(startAlpha)
+	/// @desc Sets the starting alpha for the exit animation.
+	/// @param {real} startAlpha The animation starting alpha to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationAlphaStart = function(_startAlpha){
+		_animationExitAlphaStart = _startAlpha;
+		return _self;
+	}
+	
+	/// @method setExitAnimationAlphaEnd(endAlpha)
+	/// @desc Sets the starting alpha for the exit animation.
+	/// @param {real} endAlpha The animation ending alpha to set in the container.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationAlphaEnd = function(_endAlpha){
+		_animationExitAlphaEnd = _endAlpha;
+		return _self;
+	}
+	#endregion
+	
+	#endregion
+	
+	#endregion
 }
-
-/// @func visage_container_destroy(container)
-/// @desc Destroys a previously created container.
-/// @param {struct} container Container to destroy.
-/// @returns {void}
-function visage_container_destroy(_container){
-	delete _container;
-}
-
-#region // Entrance animations
-
-#region // Movement
-
-/// @func visage_container_set_entrance_movement_animation(container, animationCurve, isReversed)
-/// @desc Sets the movement animation curve for specified container.
-/// @param {struct} container The container to set the movement animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_entrance_movement_animation(_container, _animationCurve, _isReversed){
-	_container.setEntranceAnimationMovementCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_entrance_movement_timing(container, duration, offset)
-/// @desc Sets the movement animation duration and offset for specified container.
-/// @param {struct} container The container to set the movement duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_entrance_movement_timing(_container, _duration, _offset){
-	_container.setEntranceAnimationMovementDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_entrance_movement_position_start(container, startX, startY)
-/// @desc Sets the starting movement position for specified container.
-/// @param {struct} container The container to set the starting movement position in.
-/// @param {real} startX The animation starting x position to set in the container.
-/// @param {real} startY The animation starting y position to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_movement_position_start(_container, _startX, _startY){
-	_container.setEntranceAnimationMovementPositionStart(_startX, _startY);
-}
-
-/// @func visage_container_set_entrance_movement_position_end(container, endX, endY)
-/// @desc Sets the ending movement position for specified container.
-/// @param {struct} container The container to set the ending movement position in.
-/// @param {real} endX The animation ending x position to set in the container.
-/// @param {real} endY The animation ending y position to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_movement_position_end(_container, _endX, _endY){
-	_container.setEntranceAnimationMovementPositionEnd(_endX, _endY);
-}
-
-#endregion
-
-#region // Rotation
-
-/// @func visage_container_set_entrance_rotation_animation(container, animationCurve, isReversed)
-/// @desc Sets the rotation animation curve for specified container.
-/// @param {struct} container The container to set the rotation animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_entrance_rotation_animation(_container, _animationCurve, _isReversed){
-	_container.setEntranceAnimationRotationCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_entrance_rotation_timing(container, duration, offset)
-/// @desc Sets the rotation animation duration and offset for specified container.
-/// @param {struct} container The container to set the rotation duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_entrance_rotation_timing(_container, _duration, _offset){
-	_container.setEntranceAnimationRotationDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_entrance_rotation_start(container, startAngle)
-/// @desc Sets the starting rotation angle for specified container.
-/// @param {struct} container The container to set the starting rotation angle in.
-/// @param {real} startAngle The animation starting rotation angle to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_rotation_start(_container, _startAngle){
-	_container.setEntranceAnimationRotationStart(_startAngle);
-}
-
-/// @func visage_container_set_entrance_rotation_end(container, endAngle)
-/// @desc Sets the ending rotation angle for specified container.
-/// @param {struct} container The container to set the ending rotation angle in.
-/// @param {real} endAngle The animation ending rotation angle to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_rotation_end(_container, _endAngle){
-	_container.setEntranceAnimationRotationEnd(_endAngle);
-}
-
-#endregion
-
-#region // Scale
-
-/// @func visage_container_set_entrance_scale_animation(container, animationCurve, isReversed)
-/// @desc Sets the scale animation curve for specified container.
-/// @param {struct} container The container to set the scale animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_entrance_scale_animation(_container, _animationCurve, _isReversed){
-	_container.setEntranceAnimationScaleCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_entrance_scale_timing(container, duration, offset)
-/// @desc Sets the scale animation duration and offset for specified container.
-/// @param {struct} container The container to set the scale duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_entrance_scale_timing(_container, _duration, _offset){
-	_container.setEntranceAnimationScaleDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_entrance_scale_start(container, startScale)
-/// @desc Sets the starting scale for specified container.
-/// @param {struct} container The container to set the starting scale in.
-/// @param {real} startScale The animation starting scale to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_scale_start(_container, _startScale){
-	_container.setEntranceAnimationScaleStart(_startScale);
-}
-
-/// @func visage_container_set_entrance_scale_end(container, endScale)
-/// @desc Sets the ending scale for specified container.
-/// @param {struct} container The container to set the ending scale in.
-/// @param {real} endScale The animation ending scale to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_scale_end(_container, _endScale){
-	_container.setEntranceAnimationScaleEnd(_endScale);
-}
-
-#endregion
-
-#region // Alpha
-
-/// @func visage_container_set_entrance_alpha_animation(container, animationCurve, isReversed)
-/// @desc Sets the alpha animation curve for specified container.
-/// @param {struct} container The container to set the scale animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_entrance_alpha_animation(_container, _animationCurve, _isReversed){
-	_container.setEntranceAnimationAlphaCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_entrance_alpha_timing(container, duration, offset)
-/// @desc Sets the alpha animation duration and offset for specified container.
-/// @param {struct} container The container to set the alpha duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_entrance_alpha_timing(_container, _duration, _offset){
-	_container.setEntranceAnimationAlphaDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_entrance_alpha_start(container, startAlpha)
-/// @desc Sets the starting alpha for specified container.
-/// @param {struct} container The container to set the starting alpha in.
-/// @param {real} startAlpha The animation starting alpha to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_alpha_start(_container, _startAlpha){
-	_container.setEntranceAnimationAlphaStart(_startAlpha);
-}
-
-/// @func visage_container_set_entrance_alpha_end(container, endAlpha)
-/// @desc Sets the starting alpha for specified container.
-/// @param {struct} container The container to set the ending alpha in.
-/// @param {real} endAlpha The animation ending alpha to set in the container.
-/// @returns {void}
-function visage_container_set_entrance_alpha_end(_container, _endAlpha){
-	_container.setEntranceAnimationAlphaEnd(_endAlpha);
-}
-
-#endregion
-
-#endregion
-
-#region // Exit animations
-
-#region // Movement
-
-/// @func visage_container_set_exit_movement_animation(container, animationCurve, isReversed)
-/// @desc Sets the movement animation curve for specified container.
-/// @param {struct} container The container to set the movement animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_exit_movement_animation(_container, _animationCurve, _isReversed){
-	_container.setExitAnimationMovementCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_exit_movement_timing(container, duration, offset)
-/// @desc Sets the movement animation duration and offset for specified container.
-/// @param {struct} container The container to set the movement duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_exit_movement_timing(_container, _duration, _offset){
-	_container.setExitAnimationMovementDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_exit_movement_position_start(container, startX, startY)
-/// @desc Sets the starting movement position for specified container.
-/// @param {struct} container The container to set the starting movement position in.
-/// @param {real} startX The animation starting x position to set in the container.
-/// @param {real} startY The animation starting y position to set in the container.
-/// @returns {void}
-function visage_container_set_exit_movement_position_start(_container, _startX, _startY){
-	_container.setExitAnimationMovementPositionStart(_startX, _startY);
-}
-
-/// @func visage_container_set_exit_movement_position_end(container, endX, endY)
-/// @desc Sets the ending movement position for specified container.
-/// @param {struct} container The container to set the ending movement position in.
-/// @param {real} endX The animation ending x position to set in the container.
-/// @param {real} endY The animation ending y position to set in the container.
-/// @returns {void}
-function visage_container_set_exit_movement_position_end(_container, _endX, _endY){
-	_container.setExitAnimationMovementPositionEnd(_endX, _endY);
-}
-
-#endregion
-
-#region // Rotation
-
-/// @func visage_container_set_exit_rotation_animation(container, animationCurve, isReversed)
-/// @desc Sets the rotation animation curve for specified container.
-/// @param {struct} container The container to set the rotation animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_exit_rotation_animation(_container, _animationCurve, _isReversed){
-	_container.setExitAnimationRotationCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_exit_rotation_timing(container, duration, offset)
-/// @desc Sets the rotation animation duration and offset for specified container.
-/// @param {struct} container The container to set the rotation duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_exit_rotation_timing(_container, _duration, _offset){
-	_container.setExitAnimationRotationDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_exit_rotation_start(container, startAngle)
-/// @desc Sets the starting rotation angle for specified container.
-/// @param {struct} container The container to set the starting rotation angle in.
-/// @param {real} startAngle The animation starting rotation angle to set in the container.
-/// @returns {void}
-function visage_container_set_exit_rotation_start(_container, _startAngle){
-	_container.setExitAnimationRotationStart(_startAngle);
-}
-
-/// @func visage_container_set_exit_rotation_end(container, endAngle)
-/// @desc Sets the ending rotation angle for specified container.
-/// @param {struct} container The container to set the ending rotation angle in.
-/// @param {real} endAngle The animation ending rotation angle to set in the container.
-/// @returns {void}
-function visage_container_set_exit_rotation_end(_container, _endAngle){
-	_container.setExitAnimationRotationEnd(_endAngle);
-}
-
-#endregion
-
-#region // Scale
-
-/// @func visage_container_set_exit_scale_animation(container, animationCurve, isReversed)
-/// @desc Sets the scale animation curve for specified container.
-/// @param {struct} container The container to set the scale animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_exit_scale_animation(_container, _animationCurve, _isReversed){
-	_container.setExitAnimationScaleCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_exit_scale_timing(container, duration, offset)
-/// @desc Sets the scale animation duration and offset for specified container.
-/// @param {struct} container The container to set the scale duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_exit_scale_timing(_container, _duration, _offset){
-	_container.setExitAnimationScaleDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_exit_scale_start(container, startScale)
-/// @desc Sets the starting scale for specified container.
-/// @param {struct} container The container to set the starting scale in.
-/// @param {real} startScale The animation starting scale to set in the container.
-/// @returns {void}
-function visage_container_set_exit_scale_start(_container, _startScale){
-	_container.setExitAnimationScaleStart(_startScale);
-}
-
-/// @func visage_container_set_exit_scale_end(container, endScale)
-/// @desc Sets the ending scale for specified container.
-/// @param {struct} container The container to set the ending scale in.
-/// @param {real} endScale The animation ending scale to set in the container.
-/// @returns {void}
-function visage_container_set_exit_scale_end(_container, _endScale){
-	_container.setExitAnimationScaleEnd(_endScale);
-}
-
-#endregion
-
-#region // Alpha
-
-/// @func visage_container_set_exit_alpha_animation(container, animationCurve, isReversed)
-/// @desc Sets the alpha animation curve for specified container.
-/// @param {struct} container The container to set the scale animation in.
-/// @param {Asset.GMAnimCurve} animationCurve The animation curve to set in the container.
-/// @param {bool} isReversed Determines if the animation curve is read normally (false) or reversed (true)
-/// @returns {void}
-function visage_container_set_exit_alpha_animation(_container, _animationCurve, _isReversed){
-	_container.setExitAnimationAlphaCurve(_animationCurve, _isReversed);	
-}
-
-/// @func visage_container_set_exit_alpha_timing(container, duration, offset)
-/// @desc Sets the alpha animation duration and offset for specified container.
-/// @param {struct} container The container to set the alpha duration in.
-/// @param {real} duration The animation duration (in ms) to set in the container.
-/// @param {real} offset The starting offset (in ms) of the animation.
-/// @returns {void}
-function visage_container_set_exit_alpha_timing(_container, _duration, _offset){
-	_container.setExitAnimationAlphaDuration(_duration, _offset);	
-}
-
-/// @func visage_container_set_exit_alpha_start(container, startAlpha)
-/// @desc Sets the starting alpha for specified container.
-/// @param {struct} container The container to set the starting alpha in.
-/// @param {real} startAlpha The animation starting alpha to set in the container.
-/// @returns {void}
-function visage_container_set_exit_alpha_start(_container, _startAlpha){
-	_container.setExitAnimationAlphaStart(_startAlpha);
-}
-
-/// @func visage_container_set_exit_alpha_end(container, endAlpha)
-/// @desc Sets the starting alpha for specified container.
-/// @param {struct} container The container to set the ending alpha in.
-/// @param {real} endAlpha The animation ending alpha to set in the container.
-/// @returns {void}
-function visage_container_set_exit_alpha_end(_container, _endAlpha){
-	_container.setExitAnimationAlphaEnd(_endAlpha);
-}
-
-#endregion
-
-#endregion
-
-#endregion
