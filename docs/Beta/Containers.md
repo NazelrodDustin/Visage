@@ -12,7 +12,7 @@ Sets the movement animation curve for the entrance animation.
 |`animationCurve` |Asset.GMAnimCurve |The animation curve to set in the container. |
 |`isReversed` |bool |Determines if the animation curve is read normally (false) or reversed (true) |
 
-**Returns:** This container for method chaining.
+**Returns:** This container for method chaining. Change to test some Tome stuff.
 
 ### `.setEntranceAnimationMovementTiming(duration, offset)` → *struct*
 Sets the movement animation duration and offset for the entrance animation.
