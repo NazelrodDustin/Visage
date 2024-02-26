@@ -103,11 +103,11 @@ function __tome_http_update_file(_filePath, _fileContent){
 		var _fileSha = "";
 		
 		var _responseIsBlank = true;
-		
+
 		if (is_struct(_response)){
 			_responseIsBlank = variable_struct_names_count(_response) < 1
 		}
-		
+
 		if (_response[$ "message"] != "Not Found" && !_responseIsBlank) {
 	        __tomeTrace(string("File exists: {0} SHA: {1}", _metadata.__filePath, _response.sha), true);
 			_fileSha = _response.sha;
@@ -116,7 +116,7 @@ function __tome_http_update_file(_filePath, _fileContent){
 	    }
 			
 		//Update/Create the file
-		var _endpoint = "repos/" + TOME_GITHUB_USERNAME + "/" + TOME_GITHUB_REPO_NAME + "/contents/" + _metadata.__filePath + "?ref=" + TOME_GITHUB_REPO_BRANCH;;
+		var _endpoint = "repos/" + TOME_GITHUB_USERNAME + "/" + TOME_GITHUB_REPO_NAME + "/contents/" + _metadata.__filePath + "?ref=" + TOME_GITHUB_REPO_BRANCH;
 
 		// Build the request body
 		var _requestBody = {

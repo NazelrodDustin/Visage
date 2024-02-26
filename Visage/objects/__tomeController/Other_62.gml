@@ -3,6 +3,16 @@ var _callbackArraySize = array_length(requestCallbacks);
 var _markForDeletionArray = [];
 var _requestResponseId = async_load[? "id"];
 
+
+var k = ds_map_find_first(async_load),
+    maptext = "";
+while (!is_undefined(k)) {
+  maptext += string(k) + ": " + string(async_load[? k]) + "\n";
+  k = ds_map_find_next(async_load, k);
+}
+show_debug_message(maptext);
+
+
 if (_callbackArraySize > 0){
 	//Loop through all of the requests and see which one is receving the response
 	var _i = 0;
