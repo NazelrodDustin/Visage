@@ -16,7 +16,6 @@ function visageContainer() constructor{
 	_rotation = 0;
 	_scale = 1;
 	_alpha = 1;
-	_isVisible = true;
 	_parentElement = noone;
 	_subElements = [];
 	_elementSprite = noone;
@@ -25,6 +24,8 @@ function visageContainer() constructor{
 	#region //Animation variables
 	
 	#region //Entrance animation
+	_animationEntranceOffset = 0;
+	
 	_animationEntranceMovementCurve = noone;
 	_animationEntranceMovementReversed = false;
 	_animationEntranceMovementDuration = 0;
@@ -69,6 +70,8 @@ function visageContainer() constructor{
 	#endregion
 	
 	#region //Exit animation
+	_animationExitOffset = 0;
+	
 	_animationExitMovementCurve = noone;
 	_animationExitMovementReversed = false;
 	_animationExitMovementDuration = 0;
@@ -117,7 +120,7 @@ function visageContainer() constructor{
 	
 	#region // Internal methods
 	
-		_update = function(){
+	_update = function(){
 		if (animationEntranceIsPlaying()){			
 			if (_animationEntranceMovementCurve != noone){
 				_animationEntranceMovementProgress = clamp(max((current_time - _animationEntranceMovementStartingTime) - _animationEntranceMovementOffset, 0) / _animationEntranceMovementDuration, 0, 1);
@@ -264,6 +267,10 @@ function visageContainer() constructor{
 	}
 
 	_draw = function(){
+		if (_parentElement != noone){
+			
+		}
+		
 		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 	}
 	#endregion
@@ -272,10 +279,10 @@ function visageContainer() constructor{
 	
 	animationEntrancePlay = function(){
 		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
-			_animationEntranceMovementStartingTime = current_time;
-			_animationEntranceRotationStartingTime = current_time;
-			_animationEntranceScaleStartingTime = current_time;
-			_animationEntranceAlphaStartingTime = current_time;
+			_animationEntranceMovementStartingTime = current_time + _animationEntranceOffset;
+			_animationEntranceRotationStartingTime = current_time + _animationEntranceOffset;
+			_animationEntranceScaleStartingTime = current_time + _animationEntranceOffset;
+			_animationEntranceAlphaStartingTime = current_time + _animationEntranceOffset;
 		
 			_animationEntranceMovementIsPlaying = true;
 			_animationEntranceRotationIsPlaying = true;
@@ -313,10 +320,10 @@ function visageContainer() constructor{
 	
 	animationExitPlay = function(){
 		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
-			_animationExitMovementStartingTime = current_time;
-			_animationExitRotationStartingTime = current_time;
-			_animationExitScaleStartingTime = current_time;
-			_animationExitAlphaStartingTime = current_time;
+			_animationExitMovementStartingTime = current_time + _animationExitOffset;
+			_animationExitRotationStartingTime = current_time + _animationExitOffset;
+			_animationExitScaleStartingTime = current_time + _animationExitOffset;
+			_animationExitAlphaStartingTime = current_time + _animationExitOffset;
 		
 			_animationExitMovementIsPlaying = true;
 			_animationExitRotationIsPlaying = true;
@@ -327,12 +334,14 @@ function visageContainer() constructor{
 		return false;
 	}
 	
+	
 	animationExitIsPlaying = function(){
 		return (_animationExitMovementIsPlaying ||
 				_animationExitRotationIsPlaying ||
 				_animationExitScaleIsPlaying ||
 				_animationExitAlphaIsPlaying);
 	}
+	
 	
 	animationExitReset = function(){
 		_animationExitMovementProgress = 0;
@@ -350,9 +359,24 @@ function visageContainer() constructor{
 		_animationExitScaleIsPlaying = false;
 		_animationExitAlphaIsPlaying = false;
 	}
-
-
-
+	
+	/// @method setEntranceAnimationOffset(offset)
+	/// @desc Sets exit animation offset. This adds an offset to all entrance animation channels, for use when container is a child to another container.
+	/// @param {real} offset The offset (in ms) to delay the entire entrance animation.
+	/// @returns {struct} This container for method chaining.
+	setEntranceAnimationOffset = function(_offset){
+		_animationEntranceOffset = _offset;
+		return _self;
+	}
+	
+	/// @method setExitAnimationOffset(offset)
+	/// @desc Sets exit animation offset. This adds an offset to all exit animation channels, for use when container is a child to another container.
+	/// @param {real} offset The offset (in ms) to delay the entire exit animation.
+	/// @returns {struct} This container for method chaining.
+	setExitAnimationOffset = function(_offset){
+		_animationExitOffset = _offset;
+		return _self;
+	}
 
 	#region // Movement
 	/// @method setEntranceAnimationMovementCurve(animationCurve, isReversed)
