@@ -3,9 +3,6 @@
 
 /// @text Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties. <br>
 
-#region /// @text ## Methods <br>
-
-
 /// @constructor
 /// @func visageContainer()
 
@@ -16,8 +13,9 @@ function visageContainer() constructor{
 	_rotation = 0;
 	_scale = 1;
 	_alpha = 1;
+	_isVisible = true;
 	_parentElement = noone;
-	_subElements = [];
+	_subElements = ds_list_create();
 	_elementSprite = noone;
 	_self = self;
 	
@@ -120,6 +118,8 @@ function visageContainer() constructor{
 	
 	#region // Internal methods
 	
+	/// @method _update()
+	/// @desc [Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
 	_update = function(){
 		if (animationEntranceIsPlaying()){			
 			if (_animationEntranceMovementCurve != noone){
@@ -189,8 +189,6 @@ function visageContainer() constructor{
 			}else{
 				_animationEntranceAlphaIsPlaying = false;
 			}
-			
-			show_debug_message(string("Movement Progress: {0}\nRotation Progress: {1}\nScale Progress: {2}\nAlpha Progress: {3}\n", _animationEntranceMovementProgress, _animationEntranceRotationProgress, _animationEntranceScaleProgress, _animationEntranceAlphaProgress, ))
 		}
 		
 		if (animationExitIsPlaying()){
@@ -261,23 +259,36 @@ function visageContainer() constructor{
 			}else{
 				_animationExitAlphaIsPlaying = false;
 			}
-			
-            show_debug_message(string("Movement Progress: {0}\nRotation Progress: {1}\nScale Progress: {2}\nAlpha Progress: {3}\n", _animationExitMovementProgress, _animationExitRotationProgress, _animationExitScaleProgress, _animationExitAlphaProgress, ))
-        }
+		}
 	}
 
+	/// @method _draw()
+	/// @desc [Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
 	_draw = function(){
-		if (_parentElement != noone){
-			
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			_subElements[| i]._draw();
+			if (_subElements.wasUpdated){
+				wasUpdated = true;
+			}
 		}
-		
 		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 	}
 	#endregion
 	
 	#region // Animation methods
-	
-	animationEntrancePlay = function(){
+
+	/// @method animationEntrancePlay(forced)
+	/// @desc starts playing the exit animation.
+	/// @param {bool} forced Determines if the animation is forced to play or not.
+	/// @returns {bool} True if the animation was started, False if not.
+	animationEntrancePlay = function(_forced = false){
+		
+		if (_forced){
+			_animationEntranceReset();
+			_animationExitReset();
+		}
+		
+		
 		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
 			_animationEntranceMovementStartingTime = current_time + _animationEntranceOffset;
 			_animationEntranceRotationStartingTime = current_time + _animationEntranceOffset;
@@ -293,7 +304,10 @@ function visageContainer() constructor{
 		}
 		return false;
 	}
-	
+		
+	/// @method animationEntranceIsPlaying()
+	/// @desc Checks if entrance animation is currently playing.
+	/// @returns {bool} True if the animation is currently playing, False if not.
 	animationEntranceIsPlaying = function(){
 		return (_animationEntranceMovementIsPlaying ||
 				_animationEntranceRotationIsPlaying ||
@@ -301,6 +315,8 @@ function visageContainer() constructor{
 				_animationEntranceAlphaIsPlaying);
 	}
 	
+	/// @method animationEntranceReset()
+	/// @desc Resets exit animation to beginning and stops playing.
 	animationEntranceReset = function(){
 		_animationEntranceMovementProgress = 0;
 		_animationEntranceRotationProgress = 0;
@@ -318,7 +334,17 @@ function visageContainer() constructor{
 		_animationEntranceAlphaIsPlaying = false;
 	}
 	
-	animationExitPlay = function(){
+	/// @method animationExitPlay(forced)
+	/// @desc starts playing the exit animation.
+	/// @param {bool} forced Determines if the animation is forced to play or not.
+	/// @returns {bool} True if the animation was started, False if not.
+	animationExitPlay = function(_forced = false){
+		
+		if (_forced){
+			_animationEntranceReset();
+			_animationExitReset();
+		}
+		
 		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
 			_animationExitMovementStartingTime = current_time + _animationExitOffset;
 			_animationExitRotationStartingTime = current_time + _animationExitOffset;
@@ -334,7 +360,9 @@ function visageContainer() constructor{
 		return false;
 	}
 	
-	
+	/// @method animationExitIsPlaying()
+	/// @desc Checks if exit animation is currently playing.
+	/// @returns {bool} True if the animation is currently playing, False if not.
 	animationExitIsPlaying = function(){
 		return (_animationExitMovementIsPlaying ||
 				_animationExitRotationIsPlaying ||
@@ -342,7 +370,8 @@ function visageContainer() constructor{
 				_animationExitAlphaIsPlaying);
 	}
 	
-	
+	/// @method animationExitReset()
+	/// @desc Resets exit animation to beginning and stops playing.
 	animationExitReset = function(){
 		_animationExitMovementProgress = 0;
 		_animationExitRotationProgress = 0;
@@ -717,5 +746,5 @@ function visageContainer() constructor{
 	
 	#endregion
 	
-	#endregion
+
 }
