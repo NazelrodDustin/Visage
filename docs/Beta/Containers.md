@@ -8,7 +8,7 @@ Containers are the base for any GUI element. Can control visibility, location, r
 [Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
 
 ### `._draw()` → *null*
-[Internal] Test Change Drawing logic for animations and other data. This is called internally and should not be called manually.
+[Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
 
 ### `.addSubElement(element)` → *null*
 Adds a sub element to be tracked by this element.
