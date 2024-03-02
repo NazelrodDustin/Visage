@@ -120,6 +120,7 @@ function visageContainer() constructor{
 	
 	/// @method _update()
 	/// @desc [Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
+	/// @returns {null}
 	_update = function(){
 		if (animationEntranceIsPlaying()){			
 			if (_animationEntranceMovementCurve != noone){
@@ -264,6 +265,7 @@ function visageContainer() constructor{
 
 	/// @method _draw()
 	/// @desc [Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
+	/// @returns {null}
 	_draw = function(){
 		for (var i = 0; i < ds_list_size(_subElements); i++){
 			_subElements[| i]._draw();
@@ -273,6 +275,26 @@ function visageContainer() constructor{
 		}
 		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 	}
+	#endregion
+	
+	#region // Data manipulation methods
+	
+	/// @method addSubElement(element)
+	/// @desc Adds a sub element to be tracked by this element.
+	/// @param {struct} element The element to add to be tracked.
+	/// @returns {null}
+	addSubElement = function(_element){
+		ds_list_add(_subElements, _element);	
+	}
+	
+	/// @method removeSubElement(element)
+	/// @desc Removes a sub element from being tracked by this element.
+	/// @param {struct} element The element to remove from being tracked.
+	/// @returns {null}
+	removeSubElement = function(_element){
+		ds_list_delete(_subElements, ds_list_find_index(_element));
+	}
+	
 	#endregion
 	
 	#region // Animation methods
@@ -317,6 +339,7 @@ function visageContainer() constructor{
 	
 	/// @method animationEntranceReset()
 	/// @desc Resets exit animation to beginning and stops playing.
+	/// @returns {null}
 	animationEntranceReset = function(){
 		_animationEntranceMovementProgress = 0;
 		_animationEntranceRotationProgress = 0;
@@ -372,6 +395,7 @@ function visageContainer() constructor{
 	
 	/// @method animationExitReset()
 	/// @desc Resets exit animation to beginning and stops playing.
+	/// @returns {null}
 	animationExitReset = function(){
 		_animationExitMovementProgress = 0;
 		_animationExitRotationProgress = 0;

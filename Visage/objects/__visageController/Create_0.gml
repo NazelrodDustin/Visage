@@ -8,6 +8,6 @@ function track_element(element){
 }
 
 function remove_tracked_element(element){
-	ds_list_delete(trackedElements, element);	
+	ds_list_delete(trackedElements, ds_list_find_index(element));
 }
 
