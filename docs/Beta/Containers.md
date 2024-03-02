@@ -24,6 +24,16 @@ Removes a sub element from being tracked by this element.
 |-----------|-----------|---------|
 |`element` |struct |The element to remove from being tracked. |
 
+### `.setVisibility(visible)` → *null*
+Sets the visibility of the container
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`visible` |bool |If the container is visible or not. |
+
+### `.getVisibility(visible)` → *bool*
+Gets the visibility of the container
+
 ### `.animationEntrancePlay(forced)` → *bool*
 starts playing the exit animation.
 
