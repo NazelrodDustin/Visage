@@ -1,8 +1,8 @@
 const config = {
      themeColor: "#53ed6d",
-   latestVersion: "Beta",
    description: "visage-documentation",
-   otherVersions: [ ],
+   latestVersion: "Beta",
    favicon: "assets/docsIcon.png",
+   otherVersions: [ ],
    name: "Visage" ,
 };
