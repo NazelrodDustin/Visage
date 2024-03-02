@@ -292,7 +292,7 @@ function visageContainer() constructor{
 	/// @param {struct} element The element to remove from being tracked.
 	/// @returns {null}
 	removeSubElement = function(_element){
-		ds_list_delete(_subElements, ds_list_find_index(_element));
+		ds_list_delete(_subElements, ds_list_find_index(_subElements, _element));
 	}
 	
 	#endregion
