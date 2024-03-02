@@ -4,6 +4,78 @@ Containers are the base for any GUI element. Can control visibility, location, r
 ## `visageContainer()` (*constructor*)
 
 **Methods**
+### `._update()` → *null*
+[Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
+
+### `._draw()` → *null*
+[Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
+
+### `.addSubElement(element)` → *null*
+Adds a sub element to be tracked by this element.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`element` |struct |The element to add to be tracked. |
+
+### `.removeSubElement(element)` → *null*
+Removes a sub element from being tracked by this element.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`element` |struct |The element to remove from being tracked. |
+
+### `.animationEntrancePlay(forced)` → *bool*
+starts playing the exit animation.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`forced` |bool |Determines if the animation is forced to play or not. |
+
+**Returns:** True if the animation was started, False if not.
+
+### `.animationEntranceIsPlaying()` → *bool*
+Checks if entrance animation is currently playing.
+
+**Returns:** True if the animation is currently playing, False if not.
+
+### `.animationEntranceReset()` → *null*
+Resets exit animation to beginning and stops playing.
+
+### `.animationExitPlay(forced)` → *bool*
+starts playing the exit animation.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`forced` |bool |Determines if the animation is forced to play or not. |
+
+**Returns:** True if the animation was started, False if not.
+
+### `.animationExitIsPlaying()` → *bool*
+Checks if exit animation is currently playing.
+
+**Returns:** True if the animation is currently playing, False if not.
+
+### `.animationExitReset()` → *null*
+Resets exit animation to beginning and stops playing.
+
+### `.setEntranceAnimationOffset(offset)` → *struct*
+Sets exit animation offset. This adds an offset to all entrance animation channels, for use when container is a child to another container.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`offset` |real |The offset (in ms) to delay the entire entrance animation. |
+
+**Returns:** This container for method chaining.
+
+### `.setExitAnimationOffset(offset)` → *struct*
+Sets exit animation offset. This adds an offset to all exit animation channels, for use when container is a child to another container.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`offset` |real |The offset (in ms) to delay the entire exit animation. |
+
+**Returns:** This container for method chaining.
+
 ### `.setEntranceAnimationMovementCurve(animationCurve, isReversed)` → *struct*
 Sets the movement animation curve for the entrance animation.
 
