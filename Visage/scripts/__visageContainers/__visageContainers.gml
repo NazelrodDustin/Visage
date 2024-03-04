@@ -16,7 +16,6 @@ function visageContainer() constructor{
 	_isVisible = true;
 	_parentElement = noone;
 	_subElements = ds_list_create();
-	_elementSprite = noone;
 	_self = self;
 	
 	#region //Animation variables
@@ -261,20 +260,121 @@ function visageContainer() constructor{
 				_animationExitAlphaIsPlaying = false;
 			}
 		}
+
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			_subElements[| i]._update();
+		}
 	}
 
 	/// @method _draw()
 	/// @desc [Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
 	/// @returns {null}
 	_draw = function(){
+		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
+		
 		for (var i = 0; i < ds_list_size(_subElements); i++){
 			_subElements[| i]._draw();
-			if (_subElements.wasUpdated){
-				wasUpdated = true;
-			}
 		}
-		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 	}
+
+	#region // Input handleing methods
+	/// @method handleMouseClickLeftPressed()
+	/// @desc [Internal] Handles input for left click press
+	/// @returns {null}
+	_handleMouseClickLeftPressed = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseClickLeftPressed();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseClickLeftReleased()
+	/// @desc [Internal] Handles input for left click release
+	/// @returns {null}
+	_handleMouseClickLeftReleased = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseClickLeftReleased();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseClickRightPressed()
+	/// @desc [Internal] Handles input for right click press
+	/// @returns {null}
+	_handleMouseClickRightPressed = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseClickRightPressed();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseClickRightReleased()
+	/// @desc [Internal] Handles input for right click release
+	/// @returns {null}
+	_handleMouseClickRightReleased = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseClickRightReleased();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseClickMiddlePressed()
+	/// @desc [Internal] Handles input for middle click press
+	/// @returns {null}
+	_handleMouseClickMiddlePressed = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseClickMiddlePressed();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseClickMiddleReleased()
+	/// @desc [Internal] Handles input for middle click release
+	/// @returns {null}
+	_handleMouseClickMiddleReleased = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseClickMiddleReleased();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseWheelUp()
+	/// @desc [Internal] Handles input for scroll wheel up
+	/// @returns {null}
+	_handleMouseWheelUp = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseWheelUp();
+			i++;
+		}
+	}
+	
+	/// @method handleMouseWheelDown()
+	/// @desc [Internal] Handles input for scroll wheel down
+	/// @returns {null}
+	_handleMouseWheelDown = function(){
+		var i = 0;
+		show_debug_message("Called from visageContainer line: " + string(array_pop(string_split(debug_get_callstack()[0], ":"))));
+		while (i < ds_list_size(_subElements)){
+			_subElements[| i]._handleMouseWheelDown();
+			i++;
+		}
+	}
+	#endregion
+
 	#endregion
 	
 	#region // Data manipulation methods
@@ -294,6 +394,21 @@ function visageContainer() constructor{
 	removeSubElement = function(_element){
 		ds_list_delete(_subElements, ds_list_find_index(_subElements, _element));
 	}
+
+	/// @method setVisibility(visible)
+	/// @desc Sets the visibility of the container
+	/// @param {bool} visible If the container is visible or not.
+	/// @returns {null}
+	setVisibility = function(_visible){
+		_isVisible = _visible;
+	}
+
+	/// @method getVisibility(visible)
+	/// @desc Gets the visibility of the container
+	/// @returns {bool}
+	getVisibility = function(){
+		return _isVisible;
+	}
 	
 	#endregion
 	
@@ -306,8 +421,8 @@ function visageContainer() constructor{
 	animationEntrancePlay = function(_forced = false){
 		
 		if (_forced){
-			_animationEntranceReset();
-			_animationExitReset();
+			animationEntranceReset();
+			animationExitReset();
 		}
 		
 		
@@ -364,8 +479,8 @@ function visageContainer() constructor{
 	animationExitPlay = function(_forced = false){
 		
 		if (_forced){
-			_animationEntranceReset();
-			_animationExitReset();
+			animationEntranceReset();
+			animationExitReset();
 		}
 		
 		if (!animationEntranceIsPlaying() && !animationExitIsPlaying()){
