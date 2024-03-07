@@ -9,7 +9,7 @@ while (!is_undefined(k)) {
   maptext += string(k) + ": " + string(async_load[? k]) + "\n";
   k = ds_map_find_next(async_load, k);
 }
-show_debug_message("\n\n====================\n" + string(maptext) + "====================\n\n");
+__tomeTrace("\n\n====================\n" + string(maptext) + "====================\n\n", true);
 
 if (_callbackArraySize > 0){
 	//Loop through all of the requests and see which one is receving the response

@@ -18,6 +18,19 @@ function visageContainer() constructor{
 	_subElements = ds_list_create();
 	_self = self;
 	
+	// Drawing variables.
+	_leftX = infinity;
+	_rightX = -infinity;
+	_topY = infinity;
+	_bottomY = -infinity;
+	_totalWidth = -infinity;
+	_totalHeight = -infinity;
+	_elementLeftDrawOffset = 0;
+	_elementTopDrawOffset = 0; 
+	_elementDrawWidth = 0;
+	_elementDrawHeight = 0;
+	_elementSurface = noone;
+	
 	#region //Animation variables
 	
 	#region //Entrance animation
@@ -270,10 +283,57 @@ function visageContainer() constructor{
 	/// @desc [Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
 	/// @returns {null}
 	_draw = function(){
-		draw_sprite_ext(spr_testTexture, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 		
 		for (var i = 0; i < ds_list_size(_subElements); i++){
 			_subElements[| i]._draw();
+		}
+		
+		var _oldWidth = _totalWidth;
+		var _oldHeight = _totalHeight;
+			
+		_leftX = - sprite_get_xoffset(spr_testTexture);
+		_rightX = sprite_get_width(spr_testTexture) - sprite_get_xoffset(spr_testTexture);
+		_topY = -sprite_get_yoffset(spr_testTexture);
+		_bottomY = sprite_get_height(spr_testTexture) - sprite_get_yoffset(spr_testTexture);
+		_totalWidth = 0;
+		_totalHeight = 0;
+			
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			var subElement = _subElements[| i];
+			_leftX = min(_leftX, subElement._x, subElement._leftX);
+			_rightX = max(_rightX, subElement._x + subElement._totalWidth);
+			_topY = min(_topY, subElement._y, subElement._topY);
+			_bottomY = max(_bottomY, subElement._y + subElement._totalHeight);
+		}
+			
+		_totalWidth = _rightX - _leftX;
+		_totalHeight = _bottomY - _topY;
+			
+		if (((_oldWidth != _totalWidth) || (_oldHeight != _totalHeight)) || !surface_exists(_elementSurface)){
+			if (surface_exists(_elementSurface)){
+				surface_resize(_elementSurface, _totalWidth, _totalHeight);
+			}else{
+				_elementSurface = surface_create(_totalWidth, _totalHeight);
+			}
+		}
+			
+		surface_set_target(_elementSurface);
+		draw_clear_alpha(c_black, 0);
+		draw_sprite(spr_testTexture, 0, -_leftX, -_topY);
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			with (_subElements[| i]){
+				if (surface_exists(_elementSurface)){
+					draw_surface_part_ext(_elementSurface, _elementLeftDrawOffset, _elementTopDrawOffset, _elementDrawWidth, _elementDrawHeight, (_leftX + _x) - other._leftX, (_topY + _y) - other._topY, 1, 1, c_white, 1.0);
+				}
+			}
+				
+		}
+		surface_reset_target();
+		
+		
+		if (_parentElement = noone){
+			var testSpr = sprite_create_from_surface(_elementSurface, 0, 0, surface_get_width(_elementSurface), surface_get_height(_elementSurface), false, false, -_leftX, -_topY)
+			draw_sprite_ext(testSpr, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
 		}
 	}
 
@@ -384,7 +444,8 @@ function visageContainer() constructor{
 	/// @param {struct} element The element to add to be tracked.
 	/// @returns {null}
 	addSubElement = function(_element){
-		ds_list_add(_subElements, _element);	
+		ds_list_add(_subElements, _element);
+		_element._parentElement = _self;
 	}
 	
 	/// @method removeSubElement(element)

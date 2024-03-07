@@ -3,10 +3,7 @@
 
 testContainer = new visageContainer();
 
-visage_track_element(testContainer);
-
-
-testContainer.setEntranceAnimationMovementCurve(elastic_out, false)
+visage_track_element(testContainer.setEntranceAnimationMovementCurve(elastic_out, false)
 .setEntranceAnimationMovementTiming(750, 0)
 .setEntranceAnimationMovementPositionStart((window_get_width() / 2) - 256, window_get_height() / 2)
 .setEntranceAnimationMovementPositionEnd((window_get_width() / 2) + 256, window_get_height() / 2)
@@ -37,16 +34,14 @@ testContainer.setEntranceAnimationMovementCurve(elastic_out, false)
 .setExitAnimationAlphaCurve(ease_in_and_out, false)
 .setExitAnimationAlphaTiming(250, 250)
 .setExitAnimationAlphaStart(1)
-.setExitAnimationAlphaEnd(0.5);
+.setExitAnimationAlphaEnd(0.5));
 
 
+testWindow = new visageWindow();
+testSubWindow = new visageWindow();
 
-
-
-
-
-
-
+testWindow.addSubElement(testSubWindow);
+testContainer.addSubElement(testWindow);
 
 
 
