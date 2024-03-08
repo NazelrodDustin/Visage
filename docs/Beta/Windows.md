@@ -6,17 +6,3 @@ Similar to a Container, the Window contains a group of GUI elements. The Window 
 **Methods**
 ### `.drawElement()` → *null*
 Drawing logic for this element to be called in _draw()
-
-### `.addSubElement(element)` → *null*
-Adds a sub element to be tracked by this element.
-
-| Parameter | Datatype  | Purpose |
-|-----------|-----------|---------|
-|`element` |struct |The element to add to be tracked. |
-
-### `.removeSubElement(element)` → *null*
-Removes a sub element from being tracked by this element.
-
-| Parameter | Datatype  | Purpose |
-|-----------|-----------|---------|
-|`element` |struct |The element to remove from being tracked. |
