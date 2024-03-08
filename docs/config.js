@@ -1,7 +1,7 @@
 const config = {
      latestVersion: "Beta",
-   favicon: "assets/docsIcon.png",
    otherVersions: [ ],
+   favicon: "assets/docsIcon.png",
    themeColor: "#53ed6d",
    description: "visage-documentation",
    name: "Visage" ,
