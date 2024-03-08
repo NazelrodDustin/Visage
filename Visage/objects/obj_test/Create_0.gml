@@ -40,8 +40,12 @@ visage_track_element(testContainer.setEntranceAnimationMovementCurve(elastic_out
 testWindow = new visageWindow();
 testSubWindow = new visageWindow();
 
+testSubWindow._isFocused = true;
+
 testWindow.addSubElement(testSubWindow);
 testContainer.addSubElement(testWindow);
+
+
 
 
 
