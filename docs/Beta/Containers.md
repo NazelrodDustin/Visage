@@ -7,22 +7,11 @@ Containers are the base for any GUI element. Can control visibility, location, r
 ### `._update()` → *null*
 [Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
 
-### `._draw()` → *null*
-[Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
+### `.getElementSize()` → *null*
+Drawing logic for this element to be called in _draw()
 
-### `.addSubElement(element)` → *null*
-Adds a sub element to be tracked by this element.
-
-| Parameter | Datatype  | Purpose |
-|-----------|-----------|---------|
-|`element` |struct |The element to add to be tracked. |
-
-### `.removeSubElement(element)` → *null*
-Removes a sub element from being tracked by this element.
-
-| Parameter | Datatype  | Purpose |
-|-----------|-----------|---------|
-|`element` |struct |The element to remove from being tracked. |
+### `.drawElement()` → *null*
+Draw this element to be called in _draw()
 
 ### `.setVisibility(visible)` → *null*
 Sets the visibility of the container
