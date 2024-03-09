@@ -37,16 +37,38 @@ visage_track_element(testContainer.setEntranceAnimationMovementCurve(elastic_out
 .setExitAnimationAlphaEnd(0.5));
 
 
-testWindow = new visageWindow();
-testSubWindow = new visageWindow();
+testWindow1 = new visageWindow();
+testWindow2 = new visageWindow();
 
-testSubWindow._isFocused = true;
+testSubWindow1 = new visageWindow();
+testSubWindow2 = new visageWindow();
 
-testWindow.addSubElement(testSubWindow);
-testContainer.addSubElement(testWindow);
-
-
-
+testSubWindow3 = new visageWindow();
+testSubWindow4 = new visageWindow();
 
 
+testWindow1.addSubElement(testSubWindow1);
+//testWindow1.addSubElement(testSubWindow2);
+//testWindow2.addSubElement(testSubWindow3);
+//testWindow2.addSubElement(testSubWindow4);
 
+//testContainer.addSubElement(testWindow1);
+//testContainer.addSubElement(testWindow2);
+
+testWindow1._x = random_range(-100, 100);
+testWindow1._y = random_range(-100, 100);
+testWindow1._width = random_range(200, 400);
+testWindow1._height = random_range(200, 400);
+
+testWindow2._x = random_range(-100, 100);
+testWindow2._y = random_range(-100, 100);
+testWindow2._width = random_range(200, 400);
+testWindow2._height = random_range(200, 400);
+
+
+editWindowIndex = 0;
+editWindow = testWindow1;
+
+visage_track_element(testWindow1);
+
+show_debug_overlay(true);

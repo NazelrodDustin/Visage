@@ -6,31 +6,61 @@
 /// @constructor
 /// @func visageWindow()
 function visageWindow() : visageElement() constructor{
-	_x = 0;
-	_y = 0;
 	_width = 128;
-	_height = 64;
+	_height = 128;
+	_halign = 0;
+	_valign = 0;
+	
 	_isResizable = false;
 	_isMinimizable = false;
 	_isMoveable = false;
-	_isVisible = true;
 	_isFocused = false;
-	_parentElement = noone;	
-	_subElements = ds_list_create();
-	_self = self;
 	
 	_focusedSprite = spr_default9SliceFocused
 	_unfocusedSprite = spr_default9SliceUnfocused
+	_alignment = VISAGE_ALIGNMENT.MIDDLE_CENTER;
+
 	
 	_update = function(){
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			_subElements[| i]._update();
+		}
 		
+				var _oldWidth = _totalWidth;
+		var _oldHeight = _totalHeight;
+		
+		getElementSize();
+			
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			var subElement = _subElements[| i];
+			_leftX = min(_leftX, subElement._leftX);
+			_rightX = max(_rightX, subElement._rightX);
+			_topY = min(_topY, subElement._topY);
+			_bottomY = max(_bottomY, subElement._bottomY);
+		}
+			
+		_totalWidth = _rightX - _leftX + 4;
+		_totalHeight = _bottomY - _topY + 4;
+			
+		if (((_oldWidth != _totalWidth) || (_oldHeight != _totalHeight)) || !surface_exists(_elementSurface)){
+			if (surface_exists(_elementSurface)){
+				surface_resize(_elementSurface, _totalWidth, _totalHeight);
+			}else{
+				_elementSurface = surface_create(_totalWidth, _totalHeight);
+			}
+		}
+		
+		getElementVisibleDimensions();
+		
+		_halign = floor(-(((_alignment % 3) / 2) * (_width)));
+		_valign = floor(-(((floor(_alignment / 3)) / 2) * (_height)));
 	}
 	
 	getElementSize = function(){
-		_leftX = 0;
-		_rightX = _width;
-		_topY = 0;
-		_bottomY = _height;
+		_leftX = _x + _halign
+		_rightX = _leftX + _width;
+		_topY = _y + _valign
+		_bottomY = _topY + _height;
 		_totalWidth = 0;
 		_totalHeight = 0;
 	}
@@ -46,9 +76,43 @@ function visageWindow() : visageElement() constructor{
 	/// @desc Drawing logic for this element to be called in _draw()
 	/// @returns {null}
 	drawElement = function(){
-		draw_sprite_stretched(_isFocused ? _focusedSprite : _unfocusedSprite, 0, -_leftX, -_topY, _width, _height);
+		draw_sprite_stretched(_isFocused ? _focusedSprite : _unfocusedSprite, 0, -_leftX + _x + _halign + 2, -_topY + _y + _valign + 2, _width, _height);
+		
+		draw_rectangle((-_leftX + _x) - 3, (-_topY + _y) - 3, (-_leftX + _x) + 3, (-_topY + _y) + 3, false)
+		
+		var alignmentText = "";
+		switch (floor(_alignment / 3)){
+			case 0:
+				alignmentText += "Top-";
+				break;
+				
+			case 1:
+				alignmentText += "Middle-";
+				break;
+				
+			case 2:
+				alignmentText += "Bottom-";
+				break;
+		}
+		switch (_alignment % 3){
+			case 0:
+				alignmentText += "left";
+				break;
+				
+			case 1:
+				alignmentText += "center";
+				break;
+				
+			case 2:
+				alignmentText += "right";
+				break;
+		}
+		
+		alignmentText += "\n(" +string(_leftX) + ", " + string(_rightX) + ")\n(" + string(_topY) + ", " + string(_bottomY) + ")\n(" + string(_x) + ", " + string(_y) + ")"
+		
+		var xPos = (-_leftX + (_x + _halign) + (_width / 2)) - (string_width(alignmentText) / 2);
+		var yPos = (-_topY + (_y + _valign) + (_height / 2)) - (string_height(alignmentText) / 2);
+		draw_text(xPos, yPos, alignmentText);
 	}	
-
-	
 }
 

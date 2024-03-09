@@ -7,16 +7,6 @@
 /// @func visageContainer()
 
 function visageContainer() : visageElement() constructor{
-	// Attribute variables
-	_x = 0;
-	_y = 0;
-	_rotation = 0;
-	_scale = 1;
-	_alpha = 1;
-	_isVisible = true;
-	_parentElement = noone;
-	_subElements = ds_list_create();
-	_self = self;
 	
 	#region //Animation variables
 	
@@ -121,6 +111,36 @@ function visageContainer() : visageElement() constructor{
 	/// @desc [Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
 	/// @returns {null}
 	_update = function(){
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			_subElements[| i]._update();
+		}
+		
+				var _oldWidth = _totalWidth;
+		var _oldHeight = _totalHeight;
+		
+		getElementSize();
+			
+		for (var i = 0; i < ds_list_size(_subElements); i++){
+			var subElement = _subElements[| i];
+			_leftX = min(_leftX, subElement._leftX);
+			_rightX = max(_rightX, subElement._rightX);
+			_topY = min(_topY, subElement._topY);
+			_bottomY = max(_bottomY, subElement._bottomY);
+		}
+			
+		_totalWidth = _rightX - _leftX + 4;
+		_totalHeight = _bottomY - _topY + 4;
+			
+		if (((_oldWidth != _totalWidth) || (_oldHeight != _totalHeight)) || !surface_exists(_elementSurface)){
+			if (surface_exists(_elementSurface)){
+				surface_resize(_elementSurface, _totalWidth, _totalHeight);
+			}else{
+				_elementSurface = surface_create(_totalWidth, _totalHeight);
+			}
+		}
+		
+		getElementVisibleDimensions();
+		
 		if (animationEntranceIsPlaying()){			
 			if (_animationEntranceMovementCurve != noone){
 				_animationEntranceMovementProgress = clamp(max((current_time - _animationEntranceMovementStartingTime) - _animationEntranceMovementOffset, 0) / _animationEntranceMovementDuration, 0, 1);
@@ -260,10 +280,6 @@ function visageContainer() : visageElement() constructor{
 				_animationExitAlphaIsPlaying = false;
 			}
 		}
-
-		for (var i = 0; i < ds_list_size(_subElements); i++){
-			_subElements[| i]._update();
-		}
 	}
 
 	/// @method getElementSize()
@@ -289,7 +305,7 @@ function visageContainer() : visageElement() constructor{
 	/// @desc Draw this element to be called in _draw()
 	/// @returns {null}
 	drawElement = function(){
-		draw_sprite(spr_testTexture, 0, -_leftX, -_topY);
+		draw_sprite(spr_testTexture, 0, -_leftX + 2, -_topY + 2);
 	}
 	#endregion
 	
