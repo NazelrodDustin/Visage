@@ -1,6 +1,10 @@
 /// @description Insert description here
 // You can write your code in this editor
 
+gpu_set_tex_filter(false);
+window_set_size(floor(display_get_width() / 1.25), floor(display_get_height() / 1.25));
+surface_resize(application_surface, window_get_width(), window_get_height());
+
 testContainer = new visageContainer();
 
 visage_track_element(testContainer.setEntranceAnimationMovementCurve(elastic_out, false)
@@ -55,20 +59,20 @@ testWindow1.addSubElement(testSubWindow1);
 //testContainer.addSubElement(testWindow1);
 //testContainer.addSubElement(testWindow2);
 
-testWindow1._x = random_range(-100, 100);
-testWindow1._y = random_range(-100, 100);
-testWindow1._width = random_range(200, 400);
-testWindow1._height = random_range(200, 400);
+testWindow1._x = irandom_range(-100, 100);
+testWindow1._y = irandom_range(-100, 100);
+testWindow1._width = irandom_range(200, 400);
+testWindow1._height = irandom_range(200, 400);
 
-testWindow2._x = random_range(-100, 100);
-testWindow2._y = random_range(-100, 100);
-testWindow2._width = random_range(200, 400);
-testWindow2._height = random_range(200, 400);
+testWindow2._x = irandom_range(-100, 100);
+testWindow2._y = irandom_range(-100, 100);
+testWindow2._width = irandom_range(200, 400);
+testWindow2._height = irandom_range(200, 400);
 
 
 editWindowIndex = 0;
 editWindow = testWindow1;
 
-visage_track_element(testWindow1);
+testContainer.addSubElement(testWindow1);
 
 show_debug_overlay(true);

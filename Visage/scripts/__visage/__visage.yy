@@ -5,7 +5,7 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Scripts",
-    "path": "folders/Visage/Scripts.yy",
+    "name": "_elements",
+    "path": "folders/Visage/Scripts/_elements.yy",
   },
 }

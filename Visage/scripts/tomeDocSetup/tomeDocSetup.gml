@@ -17,8 +17,8 @@ tome_set_site_latest_version("Beta");
 tome_set_site_theme_color("#53ed6d");
 
 
-tome_add_script(__visageContainers);
-tome_add_script(__visageWindows);
+tome_add_script(__visageContainer);
+tome_add_script(__visageWindow);
 
 
 
