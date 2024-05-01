@@ -1,7 +1,7 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "__visageContainer",
+  "name": "_visageContainer",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {

@@ -14,33 +14,31 @@ function visageWindow() : visageElement() constructor{
 	_isResizable = false;
 	_isMinimizable = false;
 	_isMoveable = false;
-	_isFocused = false;
 	
-	_focusedSprite = spr_default9SliceFocused
-	_unfocusedSprite = spr_default9SliceUnfocused
+	_focusedSprite = spr_default9SliceFocused;
+	_unfocusedSprite = spr_default9SliceUnfocused;
 	_alignment = VISAGE_ALIGNMENT.MIDDLE_CENTER;
 
 	
-	_update = function(){
-		for (var i = 0; i < ds_list_size(_subElements); i++){
-			_subElements[| i]._update();
-		}
-		
-				var _oldWidth = _totalWidth;
+	/// @method _updateElement()
+	/// @desc Updates element variables
+	/// @returns {null}
+	_updateElement = function(){
+		var _oldWidth = _totalWidth;
 		var _oldHeight = _totalHeight;
 		
-		getElementSize();
+		_getElementSize();
 			
-		for (var i = 0; i < ds_list_size(_subElements); i++){
-			var subElement = _subElements[| i];
+		for (var i = 0; i < array_length(_subElements); i++){
+			var subElement = _subElements[i];
 			_leftX = min(_leftX, subElement._leftX);
 			_rightX = max(_rightX, subElement._rightX);
 			_topY = min(_topY, subElement._topY);
 			_bottomY = max(_bottomY, subElement._bottomY);
 		}
 			
-		_totalWidth = _rightX - _leftX + 4;
-		_totalHeight = _bottomY - _topY + 4;
+		_totalWidth = max(_rightX - _leftX + 4, 1);
+		_totalHeight = max(_bottomY - _topY + 4, 1);
 			
 		if (((_oldWidth != _totalWidth) || (_oldHeight != _totalHeight)) || !surface_exists(_elementSurface)){
 			if (surface_exists(_elementSurface)){
@@ -50,13 +48,13 @@ function visageWindow() : visageElement() constructor{
 			}
 		}
 		
-		getElementVisibleDimensions();
+		_getElementVisibleDimensions();
 		
 		_halign = floor(-(((_alignment % 3) / 2) * (_width)));
 		_valign = floor(-(((floor(_alignment / 3)) / 2) * (_height)));
 	}
 	
-	getElementSize = function(){
+	_getElementSize = function(){
 		_leftX = _x + _halign
 		_rightX = _leftX + _width;
 		_topY = _y + _valign
@@ -65,17 +63,17 @@ function visageWindow() : visageElement() constructor{
 		_totalHeight = 0;
 	}
 	
-	getElementVisibleDimensions = function(){
+	_getElementVisibleDimensions = function(){
 		_elementLeftDrawOffset = 0;
 		_elementTopDrawOffset = 0; 
 		_elementDrawWidth = _totalWidth;
 		_elementDrawHeight = _totalHeight;	
 	}
 	
-	/// @method drawElement()
+	/// @method _drawElement()
 	/// @desc Drawing logic for this element to be called in _draw()
 	/// @returns {null}
-	drawElement = function(){
+	_drawElement = function(){
 		draw_sprite_stretched(_isFocused ? _focusedSprite : _unfocusedSprite, 0, -_leftX + _x + _halign + 2, -_topY + _y + _valign + 2, _width, _height);
 		
 		draw_rectangle((-_leftX + _x) - 3, (-_topY + _y) - 3, (-_leftX + _x) + 3, (-_topY + _y) + 3, false)

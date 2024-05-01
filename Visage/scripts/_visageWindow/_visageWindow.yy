@@ -1,7 +1,7 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "__visage",
+  "name": "_visageWindow",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {

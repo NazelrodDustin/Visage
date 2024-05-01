@@ -1,7 +1,7 @@
 /// @title Containers
 /// @category Documentation
 
-/// @text This is test text. Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties. <br>
+/// @text Containers are the base for any GUI element. Can control visibility, location, rotation, and scale for an entire group of GUI elements. The container is not a visible element, see window for a visible element with similar properties. <br>
 
 /// @constructor
 /// @func visageContainer()
@@ -48,7 +48,7 @@ function visageContainer() : visageElement() constructor{
 	_animationEntranceAlphaCurve = noone;
 	_animationEntranceAlphaReversed = false;
 	_animationEntranceAlphaDuration = 0;
-	_animationEntranceScaleOffset = 0;
+	_animationEntranceAlphaOffset = 0;
 	_animationEntranceAlphaStart = 1;
 	_animationEntranceAlphaEnd = 1;
 	_animationEntranceAlphaStartingTime = 0;
@@ -107,40 +107,17 @@ function visageContainer() : visageElement() constructor{
 	
 	#region // Internal methods
 	
-	/// @method _update()
-	/// @desc [Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
+	#region /// @method _preUpdateElement()
+	/// @desc Runs pre update logic for Element  
 	/// @returns {null}
-	_update = function(){
-		for (var i = 0; i < ds_list_size(_subElements); i++){
-			_subElements[| i]._update();
-		}
-		
-				var _oldWidth = _totalWidth;
-		var _oldHeight = _totalHeight;
-		
-		getElementSize();
-			
-		for (var i = 0; i < ds_list_size(_subElements); i++){
-			var subElement = _subElements[| i];
-			_leftX = min(_leftX, subElement._leftX);
-			_rightX = max(_rightX, subElement._rightX);
-			_topY = min(_topY, subElement._topY);
-			_bottomY = max(_bottomY, subElement._bottomY);
-		}
-			
-		_totalWidth = _rightX - _leftX + 4;
-		_totalHeight = _bottomY - _topY + 4;
-			
-		if (((_oldWidth != _totalWidth) || (_oldHeight != _totalHeight)) || !surface_exists(_elementSurface)){
-			if (surface_exists(_elementSurface)){
-				surface_resize(_elementSurface, _totalWidth, _totalHeight);
-			}else{
-				_elementSurface = surface_create(_totalWidth, _totalHeight);
-			}
-		}
-		
-		getElementVisibleDimensions();
-		
+	_preUpdateElement = function(){
+				
+	}#endregion
+	
+	#region /// @method _updateElement()
+	/// @desc Runs update logic for Element
+	/// @returns {null}
+	_updateElement = function(){	
 		if (animationEntranceIsPlaying()){			
 			if (_animationEntranceMovementCurve != noone){
 				_animationEntranceMovementProgress = clamp(max((current_time - _animationEntranceMovementStartingTime) - _animationEntranceMovementOffset, 0) / _animationEntranceMovementDuration, 0, 1);
@@ -209,6 +186,11 @@ function visageContainer() : visageElement() constructor{
 			}else{
 				_animationEntranceAlphaIsPlaying = false;
 			}
+			
+			_x = round(_x);
+			_y = round(_y);
+			
+
 		}
 		
 		if (animationExitIsPlaying()){
@@ -279,42 +261,186 @@ function visageContainer() : visageElement() constructor{
 			}else{
 				_animationExitAlphaIsPlaying = false;
 			}
+			
+			_x = round(_x);
+			_y = round(_y);
 		}
-	}
+	}#endregion
+	
+	#region /// @method _postUpdateElement()
+	/// @desc Runs post update logic for Element
+	/// @returns {null}
+	_postUpdateElement = function(){
+		
+		_getElementSize();
+		
+		var _oldWidth = _totalWidth;
+		var _oldHeight = _totalHeight;
+		
+		for (var i = 0; i < array_length(_subElements); i++){
+			var subElement = _subElements[i];
+			
+			_leftX = min(_leftX, subElement._leftX);
+			_rightX = max(_rightX, subElement._rightX);
+			_topY = min(_topY, subElement._topY);
+			_bottomY = max(_bottomY, subElement._bottomY);
+		}
+			
+		_totalWidth = min(max(_rightX - _leftX + 4, 1), 8192);
+		_totalHeight = min(max(_bottomY - _topY + 4, 1), 8192);
+			
+		if (((_oldWidth != _totalWidth) || (_oldHeight != _totalHeight)) || !surface_exists(_elementSurface)){
+			if (surface_exists(_elementSurface)){
+				
+				surface_resize(_elementSurface, _totalWidth, _totalHeight);
+			}else{
+				_elementSurface = surface_create(_totalWidth, _totalHeight);
+			}
+		}
+		
+		_getElementVisibleDimensions();
+		
+	}#endregion
 
-	/// @method getElementSize()
+	#region /// @method _getElementSize()
 	/// @desc Drawing logic for this element to be called in _draw()
 	/// @returns {null}
-	getElementSize = function(){
-		_leftX = - sprite_get_xoffset(spr_testTexture);
-		_rightX = sprite_get_width(spr_testTexture) - sprite_get_xoffset(spr_testTexture);
-		_topY = -sprite_get_yoffset(spr_testTexture);
-		_bottomY = sprite_get_height(spr_testTexture) - sprite_get_yoffset(spr_testTexture);
+	_getElementSize = function(){
+		var pX = _x; // Parent X (_x if no parent)
+		var pY = _y; // Parent Y
+		
+		if (_parentElement != noone){
+			pX += _parentElement._x;
+			pY += _parentElement._y;
+		}
+		
+		_elementLeftX = -sprite_get_xoffset(spr_testTexture);
+		_elementTopY = -sprite_get_yoffset(spr_testTexture);
+		
+		
+		_leftX = pX - sprite_get_xoffset(spr_testTexture);
+		_rightX = _leftX + sprite_get_width(spr_testTexture);
+		_topY = pY - sprite_get_yoffset(spr_testTexture);
+		_bottomY = _topY + sprite_get_height(spr_testTexture);
 		_totalWidth = 0;
 		_totalHeight = 0;
-	}
-	
-	getElementVisibleDimensions = function(){
+	}#endregion
+
+	#region /// @method _getElementVisibleDimensions()
+	/// @desc Gets visible dimensions of this element.
+	/// @returns {null}
+	_getElementVisibleDimensions = function(){
 		_elementLeftDrawOffset = 0;
 		_elementTopDrawOffset = 0; 
 		_elementDrawWidth = _totalWidth;
 		_elementDrawHeight = _totalHeight;	
-	}
+	}#endregion
 	
-	/// @method drawElement()
+	/// @method _drawElement()
 	/// @desc Draw this element to be called in _draw()
 	/// @returns {null}
-	drawElement = function(){
-		draw_sprite(spr_testTexture, 0, -_leftX + 2, -_topY + 2);
+	_drawElement = function(){
+		var pX = _x; // Parent X (_x if no parent)
+		var pY = _y; // Parent Y
+		
+		if (_parentElement != noone){
+			pX += _parentElement._x;
+			pY += _parentElement._y;
+		}
+		
+		draw_sprite(spr_testTexture, 0, pX - _leftX + 2, pY - _topY + 2);
 	}
 	#endregion
 	
 	#region // Data manipulation methods
 	
+	/// @method copy(element)
+	/// @desc Copies the attributes of the provided element. If element is of same type, then all attriubutes are copied, if element is of different type, only base element attriubutes are copied.
+	/// @param {struct} element The element to copy attriubutes from 
+	/// @returns {struct} This container for method chaining.
+	copy = function(_element){
+		if (instanceof(_element) == "visageContainer"){
+			_x = _element._x;
+			_y = _element._y;
+			_width = _element._width;
+			_height = _element._height;
+			_rotation = _element._rotation;
+			_scale = _element._scale;
+			_alpha = _element._alpha;
+			_isVisible = _element._isVisible;
+				
+			_animationEntranceMovementCurve = _element._animationEntranceMovementCurve;
+			_animationEntranceMovementReversed = _element._animationEntranceMovementReversed;
+			_animationEntranceMovementDuration = _element._animationEntranceMovementDuration;
+			_animationEntranceMovementOffset = _element._animationEntranceMovementOffset;
+			_animationEntranceMovementStartX = _element._animationEntranceMovementStartX;
+			_animationEntranceMovementStartY = _element._animationEntranceMovementStartY
+			_animationEntranceMovementEndX = _element._animationEntranceMovementEndX;
+			_animationEntranceMovementEndY = _element._animationEntranceMovementEndY;
+	
+			_animationEntranceRotationCurve = _element._animationEntranceRotationCurve;
+			_animationEntranceRotationReversed = _element._animationEntranceRotationReversed;
+			_animationEntranceRotationDuration = _element._animationEntranceRotationDuration;
+			_animationEntranceRotationOffset = _element._animationEntranceRotationOffset;
+			_animationEntranceRotationStart = _element._animationEntranceRotationStart;
+			_animationEntranceRotationEnd = _element._animationEntranceRotationEnd;
+	
+			_animationEntranceScaleCurve = _element._animationEntranceScaleCurve;
+			_animationEntranceScaleReversed = _element._animationEntranceScaleReversed;
+			_animationEntranceScaleDuration = _element._animationEntranceScaleDuration;
+			_animationEntranceScaleOffset = _element._animationEntranceScaleOffset;
+			_animationEntranceScaleStart = _element._animationEntranceScaleStart;
+			_animationEntranceScaleEnd = _element._animationEntranceScaleEnd;
+	
+			_animationEntranceAlphaCurve = _element._animationEntranceAlphaCurve;
+			_animationEntranceAlphaReversed = _element._animationEntranceAlphaReversed;
+			_animationEntranceAlphaDuration = _element._animationEntranceAlphaDuration;
+			_animationEntranceAlphaOffset = _element._animationEntranceAlphaOffset;
+			_animationEntranceAlphaStart = _element._animationEntranceAlphaStart;
+			_animationEntranceAlphaEnd = _element._animationEntranceAlphaEnd;
+				
+			_animationExitMovementCurve = _element._animationExitMovementCurve;
+			_animationExitMovementReversed = _element._animationExitMovementReversed;
+			_animationExitMovementDuration = _element._animationExitMovementDuration;
+			_animationExitMovementOffset = _element._animationExitMovementOffset;
+			_animationExitMovementStartX = _element._animationExitMovementStartX;
+			_animationExitMovementStartY = _element._animationExitMovementStartY
+			_animationExitMovementEndX = _element._animationExitMovementEndX;
+			_animationExitMovementEndY = _element._animationExitMovementEndY;
+	
+			_animationExitRotationCurve = _element._animationExitRotationCurve;
+			_animationExitRotationReversed = _element._animationExitRotationReversed;
+			_animationExitRotationDuration = _element._animationExitRotationDuration;
+			_animationExitRotationOffset = _element._animationExitRotationOffset;
+			_animationExitRotationStart = _element._animationExitRotationStart;
+			_animationExitRotationEnd = _element._animationExitRotationEnd;
+	
+			_animationExitScaleCurve = _element._animationExitScaleCurve;
+			_animationExitScaleReversed = _element._animationExitScaleReversed;
+			_animationExitScaleDuration = _element._animationExitScaleDuration;
+			_animationExitScaleOffset = _element._animationExitScaleOffset;
+			_animationExitScaleStart = _element._animationExitScaleStart;
+			_animationExitScaleEnd = _element._animationExitScaleEnd;
+	
+			_animationExitAlphaCurve = _element._animationExitAlphaCurve;
+			_animationExitAlphaReversed = _element._animationExitAlphaReversed;
+			_animationExitAlphaDuration = _element._animationExitAlphaDuration;
+			_animationExitAlphaOffset = _element._animationExitAlphaOffset;
+			_animationExitAlphaStart = _element._animationExitAlphaStart;
+			_animationExitAlphaEnd = _element._animationExitAlphaEnd;
+				
+			_visageLog("The provided struct is of type visageContainer. All attributes will be copied.", true);
+		}else{
+			_visageLog("The provided struct is not of type visageContainer and therefore no data has been copied.");
+		}
+		
+		return _self;
+	}
+	
 	/// @method setVisibility(visible)
 	/// @desc Sets the visibility of the container
 	/// @param {bool} visible If the container is visible or not.
-	/// @returns {null}
+	/// @returns {struct} This element for method chaining.
 	setVisibility = function(_visible){
 		_isVisible = _visible;
 	}

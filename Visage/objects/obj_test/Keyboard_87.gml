@@ -1,8 +1,10 @@
 /// @description Insert description here
 // You can write your code in this editor
 
+var thisMove = moveSpeed * keyboard_check(vk_shift) ? 2.5 : 1;
+
 if (keyboard_check(vk_control)){
-	editWindow._y--;
+	testContainer2._y -= thisMove;
 }else{
-	editWindow._height--;
+	testContainer._y -= thisMove;
 }

@@ -4,21 +4,41 @@ Containers are the base for any GUI element. Can control visibility, location, r
 ## `visageContainer()` (*constructor*)
 
 **Methods**
-### `._update()` → *null*
-[Internal] Frame update logic for animations and other data. This is called internally and should not be called manually.
+### `._preUpdateElement()` → *null*
+Runs pre update logic for Element
 
-### `.getElementSize()` → *null*
+### `._updateElement()` → *null*
+Runs update logic for Element
+
+### `._postUpdateElement()` → *null*
+Runs post update logic for Element
+
+### `._getElementSize()` → *null*
 Drawing logic for this element to be called in _draw()
 
-### `.drawElement()` → *null*
+### `._getElementVisibleDimensions()` → *null*
+Gets visible dimensions of this element.
+
+### `._drawElement()` → *null*
 Draw this element to be called in _draw()
 
-### `.setVisibility(visible)` → *null*
+### `.copy(element)` → *struct*
+Copies the attributes of the provided element. If element is of same type, then all attriubutes are copied, if element is of different type, only base element attriubutes are copied.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`element` |struct |The element to copy attriubutes from |
+
+**Returns:** This container for method chaining.
+
+### `.setVisibility(visible)` → *struct*
 Sets the visibility of the container
 
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
 |`visible` |bool |If the container is visible or not. |
+
+**Returns:** This element for method chaining.
 
 ### `.getVisibility(visible)` → *bool*
 Gets the visibility of the container

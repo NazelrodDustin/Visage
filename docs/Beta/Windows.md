@@ -4,5 +4,8 @@ Similar to a Container, the Window contains a group of GUI elements. The Window 
 ## `visageWindow()` (*constructor*)
 
 **Methods**
-### `.drawElement()` → *null*
+### `._updateElement()` → *null*
+Updates element variables
+
+### `._drawElement()` → *null*
 Drawing logic for this element to be called in _draw()
