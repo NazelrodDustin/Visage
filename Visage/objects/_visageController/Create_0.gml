@@ -5,27 +5,27 @@ if (instance_number(_visageController) > 1){
 	instance_destroy();	
 }
 
-trackedElements = array_create();
-
+_trackedElements = array_create();
+_deltaTime = 0;
 function _trackElement(element){
-	array_push(trackedElements, element);
+	array_push(_trackedElements, element);
 }
 
 function _removeTrackedElement(element){
 	var elementFound = false;
-	for (var i = 0; i < array_length(trackedElements); i++) {
+	for (var i = 0; i < array_length(_trackedElements); i++) {
 		if (elementFound){
-			trackedElements[i - 1] = trackedElements[i];	
+			_trackedElements[i - 1] = _trackedElements[i];	
 		}else{
-			elementFound = (element == trackedElements[i]);
+			elementFound = (element == _trackedElements[i]);
 		}
 	}
 }
 
 function _incrementSort(priority, element){
-	for (var i = 0; i < array_length(trackedElements); i++) {
-		trackedElements[i]._incrementSort(priority, element);
+	for (var i = 0; i < array_length(_trackedElements); i++) {
+		_trackedElements[i]._incrementSort(priority, element);
 	}
 		
-	array_sort(trackedElements, _visagePrioritySort);
+	array_sort(_trackedElements, _visagePrioritySort);
 }

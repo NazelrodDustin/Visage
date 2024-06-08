@@ -205,6 +205,7 @@ function __tomeHttpRequest(_id, _callback = -1, _callBackMetaData = -1) construc
 
 function __tome_local_update_file(_filePath, _fileContent){
 	var _fullFilePath = TOME_LOCAL_REPO_PATH + _filePath;
+	__tomeTrace(_fullFilePath);
 	
 	var _fileBuffer = buffer_create(0, buffer_grow, 1);
 	

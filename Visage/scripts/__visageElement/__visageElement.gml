@@ -8,19 +8,14 @@ function visageElement() constructor{
 	#region // Variable Initialization.
 	
 	// Common Attribute Variables.
-	_x = 0; // X and Y variables do not change with alignment. Instead they are the origin of the element.
-	_y = 0; // Any sub element positions will be converted to local coordinates.
-	_width = 1; // The following variables may not be editable for all elements...
-	_height = 1; // ...Only to be used as default values, in the event the element is the parent.
-	_rotation = 0;
-	_scale = 1;
-	_alpha = 1;
+	transform = new visageTransform();
 	_isVisible = true;
 	_isFocused = false;
-	_alignment = VISAGE_ALIGNMENT.TOP_LEFT;
 	_inputMap = array_create(0); // Input map for this element.
 	_verticalGuides = array_create(0); // Verticle guide lines for aligning sub elements around this element
 	_horizontalGuides = array_create(0); // Horizontal version
+	_transformationMatrix = matrix_build(0, 0, 0, 0, 0, 0, 1, 1, 1);
+	_alpha = 1;
 	
 	// Unique Element Attribute Variables.
 	_parentElement = noone; // All of these variables are used by all elements.
@@ -86,104 +81,81 @@ function visageElement() constructor{
 	/// @desc [Internal] Calls updateSystem function for all sub elements, runs own _updateElement logic.
 	/// @returns {null}
 	_updateSystem = function(){
-		_preUpdateElement();
-		
-		for (var i = 0; i < array_length(_subElements); i++){
-			_subElements[i]._updateSystem();
-		}
-		
 		_updateElement();
 		
 		for (var i = 0; i < array_length(_subElements); i++){
-			_subElements[i]._postUpdateElement();
-		}
-		
-		
+			_subElements[i]._updateSystem();
+		}	
 	}
 	#endregion
 	
-	#region /// @method _preUpdateElement()
-	/// @desc Runs pre update logic for Element  
-	/// @returns {null}
-	_preUpdateElement = function(){
-		if (VISAGE_DEBUG){
-			_visageLog("This is being called from the visageElement parent.\nIf this is appearing in the console, you are not creating a _preUpdateElement function.\nIf the element does not require an _preUpdateElement function, you may ignore this message.\nOtherwise use create an _preUpdateElement function to be included in the system update logic.", true);
-		}	
-	}#endregion
+	#region /// @method translateMatrixTransform(matrix, transform)
+	/// @desc [Internal] Modifies a matrix using the translation component of a transform.
+	/// @param {array} matrix The matrix to modify.
+	/// @param {struct} transform The transform to get the translation component of.
+	translateMatrixTransform = function(matrix, transform){
+		return matrix_multiply(matrix_build(transform.translation.x, transform.translation.y, 0, 0, 0, 0, 1, 1, 1), matrix);
+	}
+	#endregion
+	
+	#region /// @method scaleMatrixTransform(matrix, transform)
+	/// @desc [Internal] Modifies a matrix using the scale component of a transform.
+	/// @param {array} matrix The matrix to modify.
+	/// @param {struct} transform The transform to get the scale component of.
+	scaleMatrixTransform = function(matrix, transform){
+		return matrix_multiply(matrix_build(0, 0, 0, 0, 0, 0, transform.scale.x, transform.scale.y, 1), matrix);
+	}
+	#endregion
+	
+	#region /// @method rotateMatrixTransform(matrix, transform)
+	/// @desc [Internal] Modifies a matrix using the rotation component of a transform.
+	/// @param {array} matrix The matrix to modify.
+	/// @param {struct} transform The transform to get the rotation component of.
+	rotateMatrixTransform = function(matrix, transform){
+		return matrix_multiply(matrix_build(0, 0, 0, 0, 0, transform.rotation, 1, 1, 1), matrix);
+	}
+	#endregion
 	
 	#region /// @method _updateElement()
 	/// @desc [Internal] Updates element variables. This is provded as a default function body, but the expectation is to replace this with per element update logic.
 	/// @returns {null}
 	_updateElement = function(){
 		if (VISAGE_DEBUG){
-			_visageLog("This is being called from the visageElement parent.\nIf this is appearing in the console, you are not creating a _updateElement function.\nIf the element does not require an _updateElement function, you may ignore this message.\nOtherwise use create an _updateElement function to be included in the system update logic.", true);
+			//_visageLog("This is being called from the visageElement parent.\nIf this is appearing in the console, you are not creating a _updateElement function.\nIf the element does not require an _updateElement function, you may ignore this message.\nOtherwise use create an _updateElement function to be included in the system update logic.", true);
+			_transformationMatrix = matrix_build(0, 0, 0, 0, 0, 0, 1, 1, 1);
+			_alpha = 1;
+	
+			var hierarchyStack = ds_stack_create();
+			var _element = _parentElement;
+			while (_element != noone){
+				ds_stack_push(hierarchyStack, _element);
+				_element = _element._parentElement;
+			}
+			
+			while (!ds_stack_empty(hierarchyStack)){
+				_element = ds_stack_pop(hierarchyStack);
+				_transformationMatrix = translateMatrixTransform(_transformationMatrix, _element.transform);
+				_transformationMatrix = rotateMatrixTransform(_transformationMatrix, _element.transform);
+				_transformationMatrix = scaleMatrixTransform(_transformationMatrix, _element.transform);
+				_alpha *= _element.transform.alpha;
+			}
+			
+			_transformationMatrix = translateMatrixTransform(_transformationMatrix, transform);
+			_transformationMatrix = rotateMatrixTransform(_transformationMatrix, transform);
+			_transformationMatrix = scaleMatrixTransform(_transformationMatrix, transform);
+			_alpha *= transform.alpha;
 		}
 	}
 	#endregion
-	
-		#region /// @method _postUpdateElement()
-	/// @desc Runs post update logic for Element
-	/// @returns {null}
-	_postUpdateElement = function(){
-		if (VISAGE_DEBUG){
-			_visageLog("This is being called from the visageElement parent.\nIf this is appearing in the console, you are not creating a _postUpdateElement function.\nIf the element does not require an _postUpdateElement function, you may ignore this message.\nOtherwise use create an _postUpdateElement function to be included in the system update logic.", true);
-		}	
-	}#endregion
 	
 	#region /// @method _drawSystem()
 	/// @desc [Internal] Drawing logic for animations and other data. This is called internally and should not be called manually.
 	/// @returns {null}
 	_drawSystem = function(){
+		_drawElement()
 		for (var i = 0; i < array_length(_subElements); i++){
 			_subElements[i]._drawSystem();
 		}
-		
-		if (surface_exists(_elementSurface)){
-			
-			surface_set_target(_elementSurface);
-		
-			draw_clear_alpha(c_black, 0);
-		
-			if (VISAGE_DEBUG && VISAGE_DEBUG_DRAW){
-				 draw_clear_alpha(_debugColor, 1);
-			}
-		
-			_drawElement();
-			surface_reset_target();
-			
-			if (_parentElement = noone){
-				sprite_delete(_elementSprite);
-				_elementSprite = sprite_create_from_surface(_elementSurface, 0, 0, surface_get_width(_elementSurface), surface_get_height(_elementSurface), false, false, _x - _leftX, _y - _topY)
-				draw_sprite_ext(_elementSprite, 0, _x, _y, _scale, _scale, _rotation, c_white, _alpha);
-			}
-			
-			for (var i = 0; i < array_length(_subElements); i++){
-				with (_subElements[i]){
-					if (surface_exists(_elementSurface)){
-						var _angle = degtorad(-_rotation);
-						
-						var _rotatedX = _elementLeftX * cos(_angle) - _elementTopY * sin(_angle);
-						var _rotatedY = _elementLeftX * sin(_angle) + _elementTopY * cos(_angle);
-						
-						var _drawX = _x + _rotatedX;
-						var _drawY = _y + _rotatedY;
-						draw_surface_general(_elementSurface, _elementLeftDrawOffset, _elementTopDrawOffset, _elementDrawWidth, _elementDrawHeight, _drawX, _drawY, _scale, _scale, _rotation, c_white, c_white, c_white, c_white, _alpha);
-					}
-				}
-				
-			}
-			
-			
-						
-
-
-			
-			draw_set_color(c_white);
-			draw_rectangle(_x - 5, _y - 5, _x + 5, _y + 5, false);
-			draw_set_color(c_white);
-			
-		}
-
 	}
 	#endregion
 	
@@ -192,10 +164,28 @@ function visageElement() constructor{
 	/// @returns {null}
 	_drawElement = function(){
 		if (VISAGE_DEBUG){
-			_visageLog("This is being called from the visageElement parent.\nIf this is appearing in the console, you are not creating a _drawElement function.\nIf the element does not require an _drawElement function, you may ignore this message.\nOtherwise use create an _drawElement function to be included in the system draw logic.", true);
+
+			//_visageLog("This is being called from the visageElement parent.\nIf this is appearing in the console, you are not creating a _drawElement function.\nIf the element does not require an _drawElement function, you may ignore this message.\nOtherwise use create an _drawElement function to be included in the system draw logic.", true);
+			if (_parentElement == noone){
+				draw_sprite_ext(spr_node, 0, transform.translation.x, transform.translation.y, 1, 1, transform.rotation, c_white, _alpha);
+			}else{
+				matrix_set(matrix_world, _transformationMatrix);
+				draw_set_alpha(_alpha);
+				draw_sprite(spr_icon, 0, 0, 0);
+				draw_set_alpha(1.0);
+			}
+			matrix_set(matrix_world, matrix_build_identity());
 		}
 	}
 	#endregion
+	
+	#endregion
+	
+
+	
+
+	
+	
 		
 	#region /// @method _onInput(event)
 	/// @desc [Internal] Handles input information.
