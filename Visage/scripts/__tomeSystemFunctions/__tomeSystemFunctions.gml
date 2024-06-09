@@ -205,7 +205,6 @@ function __tomeHttpRequest(_id, _callback = -1, _callBackMetaData = -1) construc
 
 function __tome_local_update_file(_filePath, _fileContent){
 	var _fullFilePath = TOME_LOCAL_REPO_PATH + _filePath;
-	__tomeTrace(_fullFilePath);
 	
 	var _fileBuffer = buffer_create(0, buffer_grow, 1);
 	
@@ -410,6 +409,9 @@ function __tome_generate_docs(){
 /// @param {string} filepath Path to the GML file.
 /// @returns {struct} Struct containing the markdown text, title, and category
 function __tome_parse_script(_filepath) {
+	if (string_pos("_visage.gml", _filepath) > 0){
+		show_debug_message(string("Found"));	
+	}
     var _file = file_text_open_read(_filepath);
 	var _markdown = "";
 	var _category = "";
@@ -430,6 +432,8 @@ function __tome_parse_script(_filepath) {
 	var _inDesc = false;
 	var _constructorStarted = false;
 	var _inConstructor = false;
+	var _inVariables = false;
+	var _inMethods = false;
 	var _funcStarted = false;
 	var _inFunc = false;
 	var _foundReturn = false;
@@ -502,9 +506,13 @@ function __tome_parse_script(_filepath) {
 						break;
 					
 						case "@method":
-							if (_inConstructor){
+							if (_inConstructor && !_inMethods){
 								_markdown += "\n**Methods**";	
-								_inConstructor = false;
+								_inMethods = true;
+								if (_inVariables){
+									_inConstructor = false;	
+								}
+								
 							}
 						
 							_markdown += string("\n### `.{0}` → {rv}\n" , _tagContent);		
@@ -516,6 +524,7 @@ function __tome_parse_script(_filepath) {
 					
 						case "@constructor":
 							_inConstructor = true;
+							_inMethods = false;
 							_tableStarted = false;
 						break;
 				
@@ -575,6 +584,37 @@ function __tome_parse_script(_filepath) {
 						
 								_markdown += string("|`{0}` |{1} |{2} |\n", _paramName, _paramDataType, _paramInfo);
 							}
+						break;
+						
+						case "@var":
+						case "@member":
+							if (_inConstructor && !_inVariables){
+								_markdown += "\n**Variables**\n";	
+								_inVariables = true;
+								if (_inMethods){
+									_inConstructor = false;	
+								}
+							}
+							
+							if (!_tableStarted){
+								_markdown += "\n| Name | Datatype  | Purpose |\n";
+								_markdown += "|--------|-----------|---------|\n";				
+								_tableStarted = true;
+								_inTable = true;
+							}
+						
+							_inDesc = false;
+							_inTextBlock = false;
+						
+							var _paramDataTypeUntrimed = _splitString[1];
+							var _paramDataType = string_delete(_paramDataTypeUntrimed, 1, 1);
+							_paramDataType = string_delete(_paramDataType, string_pos("}", _paramDataType), 1);
+							var _paramName = _splitString[2];
+							var _paramInfo = string_replace(_tagContent, _splitString[1], "");
+							_paramInfo = string_replace(_paramInfo, _splitString[2], "");
+							_paramInfo = string_trim(_paramInfo);
+						
+							_markdown += string("|`{0}` |{1} |{2} |\n", _paramName, _paramDataType, _paramInfo);
 						break;
 					
 						case "@returns":

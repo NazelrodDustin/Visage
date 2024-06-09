@@ -72,6 +72,7 @@
     {"id":{"name":"string_height_scribble_ext","path":"scripts/string_height_scribble_ext/string_height_scribble_ext.yy",},"order":3,},
     {"id":{"name":"visageConfig","path":"scripts/visageConfig/visageConfig.yy",},"order":0,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":0,},
+    {"id":{"name":"Deps","path":"notes/Deps/Deps.yy",},"order":0,},
     {"id":{"name":"__tomeSystemFunctions","path":"scripts/__tomeSystemFunctions/__tomeSystemFunctions.yy",},"order":4,},
     {"id":{"name":"__scribble_class_page","path":"scripts/__scribble_class_page/__scribble_class_page.yy",},"order":5,},
     {"id":{"name":"scribble_font_combine","path":"scripts/scribble_font_combine/scribble_font_combine.yy",},"order":5,},
@@ -194,7 +195,6 @@
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Tome","folderPath":"folders/Extensions/Tome.yy","order":0,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"_system","folderPath":"folders/Extensions/Tome/_system.yy","order":0,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Rooms","folderPath":"folders/Rooms.yy","order":13,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Tome","folderPath":"folders/Tome.yy","order":16,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Visage","folderPath":"folders/Visage.yy","order":14,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Fonts","folderPath":"folders/Visage/Fonts.yy","order":0,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Objects","folderPath":"folders/Visage/Objects.yy","order":1,},
@@ -202,6 +202,7 @@
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"_elements","folderPath":"folders/Visage/Scripts/_elements.yy","order":1,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sprites","folderPath":"folders/Visage/Sprites.yy","order":3,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Shaders","folderPath":"folders/Visage/Shaders.yy","order":5,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Notes","folderPath":"folders/Notes.yy","order":18,},
   ],
   "AudioGroups": [
     {"resourceType":"GMAudioGroup","resourceVersion":"1.3","name":"audiogroup_default","targets":-1,},

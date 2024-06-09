@@ -1,1 +1,4 @@
+/// @title A Note on Visage
+/// @category External Dependencies
+
 Visage relies on some external libraries to work. You can find links in the sidebar.
