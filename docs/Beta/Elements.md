@@ -1,6 +1,9 @@
 # Elements
 Visage is composed of elements. The methods listed here are shared by all elements.
 
+## `visageElement()` (*constructor*)
+
+**Methods**
 ### `.addSubElement(element)` → *null*
 Adds a sub element to be tracked by this element.
 

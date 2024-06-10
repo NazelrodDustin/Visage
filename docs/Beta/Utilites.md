@@ -163,9 +163,21 @@ Sets transform's alpha component to provided value.
 
 **Returns:** This transform for method chaining.
 
+### `.toString()` → *string*
+formats this transform as a beautified string.
+
 ## `visageCurveTiming()` (*constructor*)
 
 **Methods**
+### `.copy(curveTiming)` → *struct*
+Copies data from provided curveTiming to this one.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`curveTiming` |struct |The curveTiming to copy data from. |
+
+**Returns:** This curveTiming for method chaining.
+
 ### `.setCurve(curve)` → *struct*
 Sets the animation curve.
 
@@ -222,6 +234,9 @@ Begins the curveTiming's animation.
 ### `.pause()` → *null*
 Pauses the curveTiming's animation.
 
+### `.resume()` → *null*
+Resumes the curveTiming's animation.
+
 ### `.stop()` → *null*
 Stops and resets the curveTiming's animation.
 
@@ -252,16 +267,42 @@ Resets the curveTiming's animation.
 
 
 
-**Methods**
-### `.isPlaying()` → *boolean*
-Returns if animation is playing.
 
-**Returns:** True if any animation channel is still playing false if not.
+
+
+
+
+
+
+
+
+
+
+
+**Methods**
+### `.copy(animation)` → *struct*
+Copies data from provided animation to this one.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`animation` |struct |The animation to copy data from. |
+
+**Returns:** This animation for method chaining.
+
+### `.started()` → *boolean*
+Returns if animation has been started.
+
+**Returns:** True if started false if not.
 
 ### `.isPaused()` → *boolean*
 Returns if animation is paused.
 
 **Returns:** True if paused false if not.
+
+### `.isFinished()` → *boolean*
+Returns if animation is finished.
+
+**Returns:** True if finished false if not.
 
 ### `.setDelay(delay)` → *struct*
 
@@ -271,11 +312,18 @@ Returns if animation is paused.
 
 **Returns:** This animation for method chaining.
 
-### `.play()` → *null*
+### `.play([delay])` → *null*
 Starts all animation channels for this animation.
+
+| Parameter | Datatype  | Purpose |
+|-----------|-----------|---------|
+|`delay` |real |(Optional) If provided and >= 1, overrides this animation set delay. |
 
 ### `.pause()` → *null*
 Pauses animation, maintaining progress.
+
+### `.resume()` → *null*
+Resumes this animation if it was previously paused.
 
 ### `.stop([finish])` → *null*
 Stops animation, and resets progress.

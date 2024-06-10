@@ -142,8 +142,8 @@ function visageTransform() constructor{
 		translation.y = _transform.translation.y;
 		rotation = _transform.rotation;
 		scale.x = _transform.scale.x;
-		scale.x = _transform.scale.x;
-		alpha.x = _transform.alpha.x;
+		scale.y = _transform.scale.y;
+		alpha = _transform.alpha;
 		return _self;
 	}#endregion
 	
@@ -242,6 +242,13 @@ function visageTransform() constructor{
 		alpha = _alpha;
 		return _self;
 	}#endregion
+	
+	#region /// @method toString()
+	/// @desc formats this transform as a beautified string.
+	/// @returns {string}
+	toString = function(){
+		return string("visageTransform:\n|- Translation:\n|\t|- x: {0}\n|\t|- y: {1}\n|- Rotation: {2}\n|- Scale:\n|\t|- x: {3}\n|\t|- y: {4}\n|- Alpha: {4}", translation.x, translation.y, rotation, scale.x, scale.y, alpha);
+	}#endregion
 }
 #endregion
 
@@ -275,6 +282,18 @@ function visageCurveTiming() constructor{
 	
 	#endregion
 	
+	#region /// @method copy(curveTiming)
+	/// @desc Copies data from provided curveTiming to this one.
+	/// @param {struct} curveTiming The curveTiming to copy data from.
+	/// @returns {struct} This curveTiming for method chaining.
+	copy = function(_curveTiming){
+		_curve = _curveTiming._curve;
+		_reversed = _curveTiming._reversed;
+		_duration = _curveTiming._duration;
+		_delay = _curveTiming._delay;
+		return _self;
+	}#endregion
+	
 	#region /// @method setCurve(curve)
 	/// @desc Sets the animation curve.
 	/// @param {Asset.GMAnimCurve} curve The curve to set.
@@ -306,7 +325,7 @@ function visageCurveTiming() constructor{
 	/// @desc Sets the duration of this curveTiming.
 	/// @param {real} duration Time (in ms) animation will take to finish after any delay. >= 1
 	/// @returns {struct} This curveTiming for method chaining.
-	setDuration = function(duration){
+	setDuration = function(_duration){
 		_self._duration = max(1, _duration);
 		return _self;
 	}#endregion
@@ -318,19 +337,16 @@ function visageCurveTiming() constructor{
 		if (_playing){ 
 			
 			_elapsedTime += visageDeltaTime();
-			progress = clamp(max(_elapsedTime - _delay, 0) / _duration, 0, 1);
-		
-		
-			if (progress >= 1){
-				stop();
-			}
+			//show_debug_message(string("Time elapsed: {0}", _elapsedTime));
+			_progress = clamp(max(_elapsedTime - _delay, 0) / _duration, 0, 1);
 		}
 		
-		return animcurve_channel_evaluate(
-			animcurve_get_channel(
-				curveTimings.scale.y.getCurve(), 0),
-			(_reversed ? 1 - _progress : _progress)
-		);
+		if (_progress >= 1){
+			stop();
+			_progress = 1;
+		}
+		
+		return animcurve_channel_evaluate(animcurve_get_channel(_curve, 0), (_reversed ? 1 - _progress : _progress));
 	}#endregion
 	
 	#region /// @method isPlaying()
@@ -354,6 +370,13 @@ function visageCurveTiming() constructor{
 	/// @returns {null}
 	pause = function(){
 		_playing = false;
+	}#endregion
+	
+	#region /// @method resume()
+	/// @desc Resumes the curveTiming's animation.
+	/// @returns {null}
+	resume = function(){
+		_playing = true;
 	}#endregion
 	
 	#region /// @method stop()
@@ -383,8 +406,12 @@ function visageAnimation() constructor{
 	_self = self;
 	/// @var {struct} animationTransform The transform that is returned for intermediate animation frames.
 	_animationTransform = new visageTransform();
+	/// @var {boolean} played If this animation's play() method has been called since creation or being reset.
+	_played = false;
 	/// @var {boolean} paused If this animation is paused
 	_paused = false;
+	/// @var {boolean} finished If this animation has reached the end since creation or being reset.
+	_finished = false;
 	/// @var {real} delay The delay before all curveTimings begin (in ms, never negative)
 	_delay = 0;
 	
@@ -409,27 +436,60 @@ function visageAnimation() constructor{
 		alpha: new visageCurveTiming()
 	};
 	#endregion
-
-	#region /// @method isPlaying()
+	
+	/// @ignore true
+	#region /// @method _isPlaying()
 	/// @desc Returns if animation is playing.
 	/// @returns {boolean} True if any animation channel is still playing false if not.
-	isPlaying = function(){
+	_isPlaying = function(){
 		var _isPlaying = false;
 		_isPlaying = _isPlaying || curveTimings.translation.x.isPlaying();
 		_isPlaying = _isPlaying || curveTimings.translation.y.isPlaying();
 		_isPlaying = _isPlaying || curveTimings.rotation.isPlaying();
-		_isPlaying = _isPlaying || curveTimings.translation.x.isPlaying();
-		_isPlaying = _isPlaying || curveTimings.translation.y.isPlaying();
+		_isPlaying = _isPlaying || curveTimings.scale.x.isPlaying();
+		_isPlaying = _isPlaying || curveTimings.scale.y.isPlaying();
 		_isPlaying = _isPlaying || curveTimings.alpha.isPlaying();
-		return _isPlaying();
+		return _isPlaying;
 	}
 	#endregion
+	
+	/// @ignore false
+	#region /// @method copy(animation)
+	/// @desc Copies data from provided animation to this one.
+	/// @param {struct} animation The animation to copy data from.
+	/// @returns {struct} This animation for method chaining.
+	copy = function(_animation){
+		startTransform.copy(_animation.startTransform);
+		endTransform.copy(_animation.endTransform);
+		curveTimings.translation.x.copy(_animation.curveTimings.translation.x);
+		curveTimings.translation.y.copy(_animation.curveTimings.translation.y);
+		curveTimings.rotation.copy(_animation.curveTimings.rotation);
+		curveTimings.scale.x.copy(_animation.curveTimings.scale.x);
+		curveTimings.scale.y.copy(_animation.curveTimings.scale.y);
+		curveTimings.alpha.copy(_animation.curveTimings.alpha);
+		return _self;
+	}#endregion
+	
+	#region /// @method started()
+	/// @desc Returns if animation has been started.
+	/// @returns {boolean} True if started false if not.
+	started = function(){
+		return _played;	
+	}#endregion
 	
 	#region /// @method isPaused()
 	/// @desc Returns if animation is paused.
 	/// @returns {boolean} True if paused false if not.
 	isPaused = function(){
 		return _paused;
+	}
+	#endregion
+	
+	#region /// @method isFinished()
+	/// @desc Returns if animation is finished.
+	/// @returns {boolean} True if finished false if not.
+	isFinished = function(){
+		return _finished;
 	}
 	#endregion
 	
@@ -442,19 +502,23 @@ function visageAnimation() constructor{
 	}
 	#endregion
 	
-	#region /// @method play()
+	#region /// @method play([delay])
 	/// @desc Starts all animation channels for this animation.
+	/// @param {real} delay (Optional) If provided and >= 1, overrides this animation set delay.
 	/// @returns {null}
-	play = function(){
+	play = function(_delay = 0){
+		if (_delay <= 0){
+			_delay = _self._delay;
+		}
+		_played = true;
 		_paused = false;
-		curveTimings.translation.x.play(delay);
-		curveTimings.translation.y.play(delay);
-		curveTimings.rotation.play(delay);
-		curveTimings.translation.x.play(delay);
-		curveTimings.translation.y.play(delay);
-		curveTimings.alpha.play(delay);
-	}
-	#endregion
+		curveTimings.translation.x.play(_delay);
+		curveTimings.translation.y.play(_delay);
+		curveTimings.rotation.play(_delay);
+		curveTimings.scale.x.play(_delay);
+		curveTimings.scale.y.play(_delay);
+		curveTimings.alpha.play(_delay);
+	}#endregion
 
 	#region /// @method pause()
 	/// @desc Pauses animation, maintaining progress.
@@ -464,11 +528,23 @@ function visageAnimation() constructor{
 		curveTimings.translation.x.pause();
 		curveTimings.translation.y.pause();
 		curveTimings.rotation.pause();
-		curveTimings.translation.x.pause();
-		curveTimings.translation.y.pause();
+		curveTimings.scale.x.pause();
+		curveTimings.scale.y.pause();
 		curveTimings.alpha.pause();
-	}
-	#endregion
+	}#endregion
+	
+	#region /// @method resume()
+	/// @desc Resumes this animation if it was previously paused.
+	/// @returns {null}
+	resume = function(){
+		_paused = false;
+		curveTimings.translation.x.resume();
+		curveTimings.translation.y.resume();
+		curveTimings.rotation.resume();
+		curveTimings.scale.x.resume();
+		curveTimings.scale.y.resume();
+		curveTimings.alpha.resume();
+	}#endregion
 
 	#region /// @method stop([finish])
 	/// @desc Stops animation, and resets progress.
@@ -478,34 +554,35 @@ function visageAnimation() constructor{
 		curveTimings.translation.x.stop();
 		curveTimings.translation.y.stop();
 		curveTimings.rotation.stop();
-		curveTimings.translation.x.stop();
-		curveTimings.translation.y.stop();
+		curveTimings.scale.x.stop();
+		curveTimings.scale.y.stop();
 		curveTimings.alpha.stop();
 		
 		if (_finish){
 			_animationTransform.copy(endTransform);
 		}
-	}
-	#endregion
+	}#endregion
 	
 	#region /// @method reset()
 	/// @desc Stops animation, and resets progress. 
 	/// @returns {null}
 	reset = function(){
+		_played = false;
+		_paused = false;
+		_finished = false;
 		curveTimings.translation.x.reset();
 		curveTimings.translation.y.reset();
 		curveTimings.rotation.reset();
-		curveTimings.translation.x.reset();
-		curveTimings.translation.y.reset();
+		curveTimings.scale.x.reset();
+		curveTimings.scale.y.reset();
 		curveTimings.alpha.reset();
-	}
-	#endregion
+	}#endregion
 	
 	#region /// @method getTransform()
 	/// @desc Gets the current transform based on animation channel progress.
 	/// @returns {struct} Transform with current animation values.
 	getTransform = function(){
-		if (isPlaying()){
+		if (_isPlaying()){
 			_animationTransform.translation.x = startTransform.translation.x + 
 				((endTransform.translation.x - startTransform.translation.x) * 
 					curveTimings.translation.x.getPosition()
@@ -537,9 +614,13 @@ function visageAnimation() constructor{
 				);
 			
 			_animationTransform.translation.x = round(_animationTransform.translation.x);
-			_animationTransform.translation.y = round(_animationTransform.translation.y);		
+			_animationTransform.translation.y = round(_animationTransform.translation.y);
+		}else{
+			if (!_paused && _played){
+				_animationTransform.copy(endTransform);
+				_finished = true;
+			}
 		}
 		return _animationTransform;
-	}
-	#endregion
+	}#endregion
 }#endregion
