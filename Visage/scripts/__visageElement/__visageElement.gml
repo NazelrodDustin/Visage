@@ -10,8 +10,8 @@ function visageElement() constructor{
 	#region // Variable Initialization.
 	
 	// Common Attribute Variables.
-	transform = new visageTransform();
-	animation = new visageAnimation();
+	_self = self;
+
 	_isVisible = true;
 	_isFocused = false;
 	_inputMap = array_create(0); // Input map for this element.
@@ -23,26 +23,14 @@ function visageElement() constructor{
 	_bounds = array_create(8, 0);
 	_mouseInside = false;
 	
+	transform = new visageTransform();
+	animation = new visageAnimation();
+	
 	// Unique Element Attribute Variables.
+	
 	_parentElement = noone; // All of these variables are used by all elements.
 	_subElements = array_create(0);
 	_priority = infinity; 
-	_self = self;
-	_elementSprite = noone;
-
-	// Drawing variables.
-	_leftX = 0;
-	_rightX = 0;
-	_topY = 0;
-	_bottomY = 0;
-	_totalWidth = 0;
-	_totalHeight = 0;
-	
-	_elementLeftDrawOffset = 0;
-	_elementTopDrawOffset = 0; 
-	_elementDrawWidth = 0;
-	_elementDrawHeight = 0;
-	_elementSurface = noone;
 
 
 	// Debug Variables
@@ -162,6 +150,8 @@ function visageElement() constructor{
 		array_copy(_bounds, 2, matrix_transform_vertex(_transformationMatrix, -64, 64, 0), 0, 2);
 		array_copy(_bounds, 4, matrix_transform_vertex(_transformationMatrix, 64, -64, 0), 0, 2);
 		array_copy(_bounds, 6, matrix_transform_vertex(_transformationMatrix, 64, 64, 0), 0, 2);
+		
+		
 		
 		_mouseInside = (point_in_triangle(mouse_x, mouse_y, _bounds[0], _bounds[1], _bounds[2], _bounds[3], _bounds[4], _bounds[5]) || point_in_triangle(mouse_x, mouse_y, _bounds[6], _bounds[7], _bounds[4], _bounds[5], _bounds[2], _bounds[3]));
 	}#endregion
