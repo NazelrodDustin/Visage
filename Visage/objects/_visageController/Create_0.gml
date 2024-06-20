@@ -8,7 +8,15 @@ if (instance_number(_visageController) > 1){
 _trackedElements = array_create();
 _deltaTime = 0;
 function _trackElement(element){
-	array_push(_trackedElements, element);
+	var arrayContainsElement = false;
+	for (var i = 0; i < array_length(_trackedElements) && !arrayContainsElement; i++){
+		if (element == _trackedElements[i]){
+			arrayContainsElement = true;
+		}
+	}
+	if (arrayContainsElement){
+		array_push(_trackedElements, element);
+	}
 }
 
 function _removeTrackedElement(element){

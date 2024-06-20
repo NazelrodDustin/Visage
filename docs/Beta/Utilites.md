@@ -45,17 +45,11 @@ Gets the time since last frame.
 |--------|-----------|---------|
 |`translation` |struct |(x, y) position of transform |
 
-
-
-
 |`rotation` |real |rotation angle (in degrees) of transform |
 
 |`scale` |struct |(x, y) scale of transform |
 
-
-
-
-|`alpha` |struct |alpha of items in this transform |
+|`alpha` |real |alpha of items in this transform |
 
 
 
@@ -317,7 +311,7 @@ Starts all animation channels for this animation.
 
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
-|`delay` |real |(Optional) If provided and >= 1, overrides this animation set delay. |
+|`delay` |real |[Optional: default = 0] If provided and >= 1, overrides this animation set delay. |
 
 ### `.pause()` → *null*
 Pauses animation, maintaining progress.
@@ -330,7 +324,7 @@ Stops animation, and resets progress.
 
 | Parameter | Datatype  | Purpose |
 |-----------|-----------|---------|
-|`finish` |boolean |(Optional: default = false) If true, the animation will snap to the ending transform, otherwise it stops in place. |
+|`finish` |boolean |[Optional: default = false] If true, the animation will snap to the ending transform, otherwise it stops in place. |
 
 ### `.reset()` → *null*
 Stops animation, and resets progress.

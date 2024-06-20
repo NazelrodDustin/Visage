@@ -41,7 +41,9 @@ if (!visageInitialized()){
 	testElement1.animation.curveTimings.scale.x.setCurve(elastic_out).setDuration(500);
 	testElement1.animation.curveTimings.scale.y.setCurve(elastic_out).setDuration(500);
 	testElement1.animation.curveTimings.alpha.setCurve(ease_in_and_out).setDuration(400).setDelay(100);
+	testElement1.addAnchorPoint(10, 100);
 	
+	testElement2.setAnchorPointIndex(1);
 	testElement2.transform.setTranslation(-64, -116).setRotation(14.5).setScale(1.29, 1).setAlpha(1);
 	testElement2.animation.copy(testElement1.animation);
 	testElement2.animation.startTransform.setTranslation(-64, 0).setScale(0.5, 0.5).setAlpha(0.75);

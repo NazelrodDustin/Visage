@@ -93,7 +93,7 @@ function _visagePrioritySort(element1, element2){
 #region /// @function _visageLog(text, [verboseOnly])
 /// @desc Logs a debug message to the console indicating relationship to Visage.
 /// @param text {string} The text to be output to the console.
-/// @param verboseOnly {string} (Optional: default = false) If true, message will only be logged when Visage is in verbose mode.
+/// @param verboseOnly {string} [Optional: default = false] If true, message will only be logged when Visage is in verbose mode.
 /// @returns {null}
 function _visageLog(_text, _verboseOnly = false){
 	if (VISAGE_DEBUG && (VISAGE_VERBOSE || !_verboseOnly)){
@@ -118,18 +118,12 @@ function visageTransform() constructor{
 	
 	/// @ignore false
 	/// @var {struct} translation (x, y) position of transform
-	translation = {
-		x: 0,
-		y: 0
-	};
+	translation = new vector2(0, 0);
 	/// @var {real} rotation rotation angle (in degrees) of transform
 	rotation =  0;
 	/// @var {struct} scale (x, y) scale of transform
-	scale = {
-		x: 1,
-		y: 1
-	};
-	/// @var {struct} alpha alpha of items in this transform
+	scale = new vector2(0,0)
+	/// @var {real} alpha alpha of items in this transform
 	alpha = 1;
 	#endregion
 	
@@ -138,11 +132,9 @@ function visageTransform() constructor{
 	/// @param {struct} transform The transform to copy data from.
 	/// @returns {struct} This transform for method chaining.
 	copy = function(_transform){
-		translation.x = _transform.translation.x;
-		translation.y = _transform.translation.y;
+		translation.copy(_transform.translation);
 		rotation = _transform.rotation;
-		scale.x = _transform.scale.x;
-		scale.y = _transform.scale.y;
+		scale.copy(_transform.scale);
 		alpha = _transform.alpha;
 		return _self;
 	}#endregion
@@ -504,7 +496,7 @@ function visageAnimation() constructor{
 	
 	#region /// @method play([delay])
 	/// @desc Starts all animation channels for this animation.
-	/// @param {real} delay (Optional) If provided and >= 1, overrides this animation set delay.
+	/// @param {real} delay [Optional: default = 0] If provided and >= 1, overrides this animation set delay.
 	/// @returns {null}
 	play = function(_delay = 0){
 		if (_delay <= 0){
@@ -548,7 +540,7 @@ function visageAnimation() constructor{
 
 	#region /// @method stop([finish])
 	/// @desc Stops animation, and resets progress.
-	/// @param {boolean} finish (Optional: default = false) If true, the animation will snap to the ending transform, otherwise it stops in place.
+	/// @param {boolean} finish [Optional: default = false] If true, the animation will snap to the ending transform, otherwise it stops in place.
 	/// @returns {null}
 	stop = function(_finish = false){
 		curveTimings.translation.x.stop();
